@@ -11,7 +11,7 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        //
+        return view('livewire.categories.index');
     }
 
     /**

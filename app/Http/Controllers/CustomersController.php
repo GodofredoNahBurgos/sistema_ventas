@@ -11,7 +11,7 @@ class CustomersController extends Controller
      */
     public function index()
     {
-        //
+        return view('livewire.customers.index');
     }
 
     /**
