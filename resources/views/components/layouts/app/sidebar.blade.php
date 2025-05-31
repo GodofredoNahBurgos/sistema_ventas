@@ -15,6 +15,14 @@
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                 </flux:navlist.group>
+                <flux:navlist.group heading="{{__('Sales')}}" expandable expanded="false">
+                    <flux:navlist.item icon="banknotes" :href="route('sales.index')" :current="request()->routeIs('sales.*')" wire:navigate>{{ __('Sell Products') }}</flux:navlist.item>
+                    <flux:navlist.item icon="clipboard-document-check" :href="route('sale_details.index')" :current="request()->routeIs('sale_details.*')" wire:navigate>{{ __('Consult Sales') }}</flux:navlist.item>
+                </flux:navlist.group>
+                <flux:navlist.item icon="bookmark" :href="route('categories.index')" :current="request()->routeIs('categories.*')" wire:navigate>{{ __('Categories') }}</flux:navlist.item>
+                <flux:navlist.item icon="building-storefront" :href="route('products.index')" :current="request()->routeIs('products.*')" wire:navigate>{{ __('Products') }}</flux:navlist.item>
+                <flux:navlist.item icon="user-group" :href="route('customers.index')" :current="request()->routeIs('customrs.*')" wire:navigate>{{ __('Customers') }}</flux:navlist.item>
+                <flux:navlist.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>{{ __('Users') }}</flux:navlist.item>
             </flux:navlist>
 
             <flux:spacer />

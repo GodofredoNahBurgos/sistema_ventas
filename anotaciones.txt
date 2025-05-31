@@ -1,0 +1,2 @@
+@include('partials.head')
+Se posiciona siempre en las vistas.
