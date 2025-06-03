@@ -11,6 +11,8 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 
+use App\Models\User;
+
 new #[Layout('components.layouts.auth')] class extends Component {
     #[Validate('required|string|email')]
     public string $email = '';
@@ -28,6 +30,25 @@ new #[Layout('components.layouts.auth')] class extends Component {
         $this->validate();
 
         $this->ensureIsNotRateLimited();
+
+        /* Validamos si esta activo. */
+        $user = User::where('email', $this->email)->first();
+        
+        if ($user && ! $user->active) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => __('Usuario inactivo, contacte al administrador'),
+            ]);
+        }
+
+        /* if (! User::where('email', $this->email)->where('active', true)->exists()) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'),
+            ]);
+        } */
 
         if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($this->throttleKey());
@@ -117,11 +138,14 @@ new #[Layout('components.layouts.auth')] class extends Component {
             <flux:button variant="primary" type="submit" class="w-full">{{ __('Log in') }}</flux:button>
         </div>
     </form>
+    <div class="flex flex-col items-center gap-2">
+        <h1>Desarollado by Ing. Godo</h1>
+    </div>
 
-    @if (Route::has('register'))
+{{--     @if (Route::has('register'))
         <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
             {{ __('Don\'t have an account?') }}
             <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
         </div>
-    @endif
+    @endif --}}
 </div>

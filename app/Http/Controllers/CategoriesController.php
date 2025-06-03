@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Category;
 
 class CategoriesController extends Controller
 {
@@ -11,7 +12,9 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        return view('livewire.categories.index');
+        $titulo = 'Administrar Categorías';
+        $items = Category::all(); 
+        return view('livewire.categories.index', compact('titulo', 'items'));
     }
 
     /**
@@ -19,7 +22,8 @@ class CategoriesController extends Controller
      */
     public function create()
     {
-        //
+        $titulo = 'Crear Categoría';
+        return view('livewire.categories.create', compact);
     }
 
     /**
@@ -27,7 +31,13 @@ class CategoriesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $item = new Category();
+        $item->name = $request->name;
+        $items->user_id = auth()->id();
+        $item->save();
+
+        /* to_route */
+        return view('livewire.categories.index')->with('success', 'Categoría creada exitosamente.');
     }
 
     /**
@@ -35,7 +45,8 @@ class CategoriesController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $item = Category::find($id);
+        return view('livewire.categories.show', compact('item'));
     }
 
     /**
@@ -43,7 +54,9 @@ class CategoriesController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $titulo = 'Editar Categoría';
+        $item = Category::find($id);
+        return view('livewire.categories.edit', compact('titulo', 'item'));
     }
 
     /**
@@ -51,7 +64,12 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $item = Category::find($id);
+        $item->name = $request->name;
+        $item->save();
+
+        /* to_route */
+        return redirect()->route('categories.index')->with('success', 'Categoría actualizada exitosamente.');
     }
 
     /**
@@ -59,6 +77,9 @@ class CategoriesController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $item = Category::find($id);
+        $item->delete();
+        /* to_route */
+        return redirect()->route('categories.index')->with('success', 'Categoría eliminada exitosamente.');
     }
 }

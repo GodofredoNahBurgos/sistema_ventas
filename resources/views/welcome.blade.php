@@ -39,13 +39,13 @@
                             {{__('Log In')}}
                         </a>
 
-                        @if (Route::has('register'))
+                        {{-- @if (Route::has('register'))
                             <a
                                 href="{{ route('register') }}"
                                 class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
                                 {{__('Register')}}
                             </a>
-                        @endif
+                        @endif --}}
                     @endauth
                 </nav>
             @endif
@@ -65,7 +65,7 @@
                             <span>
                                 Lee nuestro tutorial
                                 <a href="#" target="_blank" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433] ms-1">
-                                    <span>Documentación</span>
+                                    <span>Tutorial</span>
                                     <svg
                                         width="10"
                                         height="11"

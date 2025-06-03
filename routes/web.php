@@ -23,13 +23,11 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
-    Route::redirect('settings', 'settings/profile');
 
+    Route::redirect('settings', 'settings/profile');
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
-
-    Volt::route('categories/index', 'categories.index')->name('categories.index');
 
     Volt::route('customers/index', 'customers.index')->name('customers.index');
 
@@ -38,40 +36,53 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('sales/index', 'sales.index')->name('sales.index');
 
     Volt::route('sale_details/index', 'sale_details.index')->name('sale_details.index');
-
+    
     Volt::route('users/index', 'users.index')->name('users.index');
+    Volt::route('users/create', 'users.create')->name('users.create');
+
+});
 
     /* ----- Prefijos MERO EJEMPLO USAREMOS VOLT ----- */
 
-    Route::prefix('sales')->group(function () {
+    Route::prefix('category')->middleware('auth')->group(function () {
+        /*
+        Route::get('/', [CategoriesController::class, 'index'])->name('categories');
+        Route::get('create', [CategoriesController::class, 'create'])->name('categories.create');
+        Route::post('/store', [CategoriesController::class, 'store'])->name('categories.store');
+        Route::get('/show/{id}', [CategoriesController::class, 'show'])->name('categories.show'); 
+        Route::delete('/destroy', [CategoriesController::class, 'destroy'])->name('categories.destroy');
+        Route::get('/edit/{id}', [CategoriesController::class, 'edit'])->name('categories.edit');
+        Route::put('/update/{id}', [CategoriesController::class, 'update'])->name('categories.update');
+        */
+        
+        Volt::route('categories/index', 'categories.index')->name('categories.index');
+        Volt::route('categories/create', 'categories.create')->name('categories.create');
+        Volt::route('categories/edit/{id}', 'categories.edit')->name('categories.edit');
+    });
+
+    Route::prefix('user')->middleware('auth')->group(function () {
+        Volt::route('users/index', 'users.index')->name('users.index');
+        Volt::route('users/create', 'users.create')->name('users.create');
+        Volt::route('users/edit/{id}', 'users.edit')->name('users.edit');
+    });
+
+    Route::prefix('products')->middleware('auth')->group(function () {
+        Route::get('/', [ProductsController::class, 'index'])->name('products');
+    });
+
+    Route::prefix('costumers')->middleware('auth')->group(function () {
+        Route::get('/', [CustomersController::class, 'index'])->name('customers');
+    });
+
+        Route::prefix('sales')->middleware('auth')->group(function () {
         Route::get('new_sale', [Sale::class, 'index'])->name('new_sale');
  
     });
 
-    Route::prefix('detail')->group(function () {
+    Route::prefix('detail')->middleware('auth')->group(function () {
         Route::get('detail_sale', [Sale::class, 'index'])->name('detail_sale');
-
-    });
-
-    Route::prefix('category')->group(function () {
-        Route::get('/', [CategoriesController::class, 'index'])->name('categories');
-
-    });
-
-    Route::prefix('products')->group(function () {
-        Route::get('/', [ProductsController::class, 'index'])->name('products');
-    });
-
-    Route::prefix('costumers')->group(function () {
-        Route::get('/', [CostumersController::class, 'index'])->name('costumers');
-    });
-
-    Route::prefix('users')->group(function () {
-        Route::get('/', [CostumersController::class, 'index'])->name('users');
     });
 
     /* ----- Prefijos MERO EJEMPLO USAREMOS VOLT ----- */
-    
-});
 
 require __DIR__.'/auth.php';
