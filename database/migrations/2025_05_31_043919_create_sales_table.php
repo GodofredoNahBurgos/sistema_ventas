@@ -16,10 +16,6 @@ return new class extends Migration
             $table->float('total_cost');
             $table->foreignId('user_id')
             ->constrained('users');
-            $table->foreignId('customer_id')
-            ->nullable()
-            ->constrained('customers')
-            ->nullOnDelete();
             $table->timestamps();
         });
     }

@@ -30,16 +30,9 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
     Volt::route('customers/index', 'customers.index')->name('customers.index');
-
     Volt::route('products/index', 'products.index')->name('products.index');
-
     Volt::route('sales/index', 'sales.index')->name('sales.index');
-
     Volt::route('sale_details/index', 'sale_details.index')->name('sale_details.index');
-    
-    Volt::route('users/index', 'users.index')->name('users.index');
-    Volt::route('users/create', 'users.create')->name('users.create');
-
 });
 
     /* ----- Prefijos MERO EJEMPLO USAREMOS VOLT ----- */
@@ -60,17 +53,24 @@ Route::middleware(['auth'])->group(function () {
         Volt::route('categories/edit/{id}', 'categories.edit')->name('categories.edit');
     });
 
+
     Route::prefix('user')->middleware('auth')->group(function () {
-        Volt::route('users/index', 'users.index')->name('users.index');
         Volt::route('users/create', 'users.create')->name('users.create');
+        Volt::route('users/index', 'users.index')->name('users.index');
         Volt::route('users/edit/{id}', 'users.edit')->name('users.edit');
+    });
+
+    Route::prefix('supplier')->middleware('auth')->group(function () {
+        Volt::route('suppliers/index', 'suppliers.index')->name('suppliers.index');
+        Volt::route('suppliers/create', 'suppliers.create')->name('suppliers.create');
+        Volt::route('suppliers/edit/{id}', 'suppliers.edit')->name('suppliers.edit');
     });
 
     Route::prefix('products')->middleware('auth')->group(function () {
         Route::get('/', [ProductsController::class, 'index'])->name('products');
     });
 
-    Route::prefix('costumers')->middleware('auth')->group(function () {
+    Route::prefix('customers')->middleware('auth')->group(function () {
         Route::get('/', [CustomersController::class, 'index'])->name('customers');
     });
 

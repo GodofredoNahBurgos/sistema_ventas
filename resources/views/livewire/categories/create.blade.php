@@ -13,18 +13,19 @@ new class extends Component {
             'name' => 'required|string|max:255',
         ]);
 
-        Category::create([
+        try {
+            Category::create([
             'name' => $this->name,
             'user_id' => auth()->id()
         ]);
-
-        session()->flash('message', 'Categoria creada exitosamente.');
-
+        session()->flash('success', 'Categoria creada exitosamente.');
         $this->reset('name');
-
         return redirect()->route('categories.index');
+        } catch (\Throwable $th) {
+            session()->flash('danger', 'Error al crear la categoria: ' . $th->getMessage());
+            return redirect()->route('categories.create');
+        }   
     }
-
 }; ?>
 
 <div>

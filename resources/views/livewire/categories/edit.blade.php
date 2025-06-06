@@ -17,15 +17,20 @@ new class extends Component {
 
     public function updateCategory()
     {
-        $this->validate([
+        $validated = $this->validate([
             'name' => 'required|string|max:255',
         ]);
 
-        $category = Category::find($this->id);
-        $category->name = $this->name;
-        $category->save();
-        session()->flash('message', 'Categoria actualizada exitosamente.');
-        return redirect()->route('categories.index');
+        try {
+            $category = Category::find($this->id);
+            $category->fill($validated);
+            $category->save();
+            session()->flash('success', 'Categoria actualizada exitosamente.');
+            return redirect()->route('categories.index');
+        } catch (\Throwable $th) {
+            session()->flash('danger', 'Error al actualizar la categoria: ' . $th->getMessage());
+            return redirect()->route('categories.index');
+        }
     }
 }; ?>
 

@@ -21,7 +21,8 @@
                 </flux:navlist.group>
                 <flux:navlist.item icon="bookmark" :href="route('categories.index')" :current="request()->routeIs('categories.*')" wire:navigate>{{ __('Categories') }}</flux:navlist.item>
                 <flux:navlist.item icon="gift" :href="route('products.index')" :current="request()->routeIs('products.*')" wire:navigate>{{ __('Products') }}</flux:navlist.item>
-                <flux:navlist.item icon="user-group" :href="route('customers.index')" :current="request()->routeIs('customrs.*')" wire:navigate>{{ __('Customers') }}</flux:navlist.item>
+                <flux:navlist.item icon="user-group" :href="route('suppliers.index')" :current="request()->routeIs('suppliers.*')" wire:navigate>{{ __('Suppliers') }}</flux:navlist.item>
+                <flux:navlist.item icon="user-group" :href="route('customers.index')" :current="request()->routeIs('customers.*')" wire:navigate>{{ __('Customers') }}</flux:navlist.item>
                 <flux:navlist.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>{{ __('Users') }}</flux:navlist.item>
             </flux:navlist>
 

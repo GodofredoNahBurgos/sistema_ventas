@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class UsersController extends Controller
 {
@@ -11,7 +12,9 @@ class UsersController extends Controller
      */
     public function index()
     {
-        return view('livewire.users.index');
+        $title = 'Users';
+        $items = User::all();
+        return view('livewire.users.index', compact('title', 'items'));
     }
 
     /**
@@ -19,7 +22,8 @@ class UsersController extends Controller
      */
     public function create()
     {
-        //
+        $title = 'Crear Usuario';
+        return view('livewire.users.create', compact('title'));
     }
 
     /**
@@ -27,7 +31,14 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+        ]);
+
+        return redirect()->route('users.index')->with('success', 'Usuario creado correctamente.');
     }
 
     /**
@@ -43,7 +54,9 @@ class UsersController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $item = User::find($id);
+        $title = 'Editar Usuario';
+        return view('livewire.users.edit', compact('item', 'title'));
     }
 
     /**
@@ -51,7 +64,14 @@ class UsersController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $items = User::find($id);
+        $items->name = $request->name;
+        $items->email = $request->email;
+        $items->role = $request->role;
+        $items->save();
+
+        /* to_route */
+        return redirect()->route('users.index')->with('success', 'Usuario actualizado correctamente.');
     }
 
     /**
