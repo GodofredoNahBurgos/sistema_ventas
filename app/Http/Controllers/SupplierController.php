@@ -51,7 +51,9 @@ class SupplierController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $item = Supplier::find($id);
+        $titulo = 'Eliminar proveedor';
+        return view('livewire.suppliers.show', compact('item', 'titulo'));
     }
 
     /**
@@ -89,6 +91,12 @@ class SupplierController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $item = Supplier::find($id);
+            $item->delete();
+            return redirect()->route('suppliers.index')->with('success', 'Proveedor eliminado exitosamente.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('danger', 'Error al eliminar el proveedor: ' . $e->getMessage());
+        }
     }
 }

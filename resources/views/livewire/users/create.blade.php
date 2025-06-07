@@ -40,15 +40,11 @@ new class extends Component {
 }; ?>
 
 <div>
-
     <flux:heading size="xl">Registrar Usuarios</flux:heading>
     <flux:text class="mt-2">Crea los usuarios de nuestra aplicacion.</flux:text>
-
     <form wire:submit="register" class="flex flex-col gap-6 mt-4">
-        <!-- Name -->
         <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name"
             :placeholder="__('Full name')" />
-
         <flux:select wire:model='role' label="Role">
             <flux:select.option value="" disabled>
                 {{__('Select role...')}}
@@ -60,23 +56,17 @@ new class extends Component {
                 {{__('Administrator')}}
             </flux:select.option>
         </flux:select>
-
-        <!-- Email Address -->
         <flux:input wire:model="email" :label="__('Email address')" type="email" required autocomplete="email"
             placeholder="email@example.com" />
-
-        <!-- Password -->
         <flux:input wire:model="password" :label="__('Password')" type="password" required autocomplete="new-password"
             :placeholder="__('Password')" viewable />
-
-        <!-- Confirm Password -->
         <flux:input wire:model="password_confirmation" :label="__('Confirm password')" type="password" required
             autocomplete="new-password" :placeholder="__('Confirm password')" viewable />
-
-        <div class="flex items-center justify-end">
-            <flux:button type="submit" variant="primary" class="w-full cursor-pointer">
-                {{ __('Create account') }}
+        <div class="flex items-center justify-start">
+            <flux:button type="submit" icon="plus" variant="primary" class="cursor-pointer">
+                {{ __('Crear usuario') }}
             </flux:button>
+            <flux:button icon="x-mark" variant="danger" type="button" class="mx-2"><a href="{{ route('users.index') }}">Cancelar</a></flux:button>
         </div>
     </form>
 </div>

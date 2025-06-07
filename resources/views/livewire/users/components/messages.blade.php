@@ -6,6 +6,6 @@
 
 @if (session()->has('danger'))
 <div class="w-80 m-2 text-center">
-    <flux:callout variant="danger" icon="check-circle" text="{{ session('danger') }}" />
+    <flux:callout variant="danger" icon="x-circle" text="{{ session('danger') }}" />
 </div>
 @endif

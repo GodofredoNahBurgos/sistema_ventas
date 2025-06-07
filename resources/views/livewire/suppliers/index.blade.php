@@ -5,13 +5,33 @@ use App\Models\Supplier;
 
 new class extends Component {
     public $suppliers;
+    public $selectedSupplierId = null;
+    public $selectedSupplierName = null;
     public function mount(){
         $this->suppliers = Supplier::all();
     }
     public function updateSupplier($id){
         return redirect()->route('suppliers.edit', ['id' => $id]);
     }
-
+    public function confirmDelete($id){
+        $this->selectedSupplierId = $id;
+        $this->selectedSupplierName = Supplier::find($id)->name;
+    }
+    public function delete($id){
+        try {
+            $supplier = Supplier::find($id);
+            if ($supplier) {
+                $supplier->delete();
+                $this->suppliers = Supplier::all();
+            }
+            Flux::modal('delete-supplier')->close();
+            session()->flash('danger', 'Proveedor eliminado correctamente.');
+        } catch (\Throwable $th) {
+            session()->flash('danger', 'Error al eliminar el proveedor: ' . $th->getMessage());
+        }
+        $this->selectedSupplierId = null;
+        $this->selectedSupplierName = null;
+    }
 }; ?>
 
 <div>
@@ -44,5 +64,5 @@ new class extends Component {
             </tbody>
         </table>
     </div>
-    {{-- @include('livewire.suppliers.components.modal-delete') --}}
+    @include('livewire.suppliers.components.modal-delete')
 </div>

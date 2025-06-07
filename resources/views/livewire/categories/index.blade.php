@@ -8,18 +8,15 @@ new class extends Component {
     public $categories;
     public $selectedCategoryId = null;
     public $selectedCategoryName = null;
-
     public function mount()
     {
         $this->categories = Category::all();
     }
-
     public function confirmDelete($id)
     {
         $this->selectedCategoryId = $id;
         $this->selectedCategoryName = Category::find($id)->name;
     }
-
     public function delete($id)
     {
         try {
@@ -36,20 +33,16 @@ new class extends Component {
         $this->selectedCategoryId = null;
         $this->selectedCategoryName = null;
     }
-
     public function updateCategory($id)
     {
         return redirect()->route('categories.edit', ['id' => $id]);
     }
-
 }; ?>
 
 <div>
-    
     <div class="flex flex-col">
         <flux:heading size="xl">Categorias</flux:heading>
         <flux:text class="mt-2">Administrar las categorias de nuestros productos.</flux:text>
-
         <div class="m-2 w-full h-16 flex justify-end">
             @include('livewire.categories.components.messages')
             <flux:button icon="plus" variant="primary" class="m-2 self-end">
@@ -57,9 +50,7 @@ new class extends Component {
             </flux:button>
         </div>
     </div>
-
     <flux:separator class="my-4" text="Datos" />
-
     <div class="overflow-x-auto">
         <table class="table-auto w-full">
             <thead class="">
@@ -73,7 +64,5 @@ new class extends Component {
             </tbody>
         </table>
     </div>
-
     @include('livewire.categories.components.modal-delete')
-
 </div>

@@ -23,16 +23,10 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
-
     Route::redirect('settings', 'settings/profile');
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
-
-    Volt::route('customers/index', 'customers.index')->name('customers.index');
-    Volt::route('products/index', 'products.index')->name('products.index');
-    Volt::route('sales/index', 'sales.index')->name('sales.index');
-    Volt::route('sale_details/index', 'sale_details.index')->name('sale_details.index');
 });
 
     /* ----- Prefijos MERO EJEMPLO USAREMOS VOLT ----- */
@@ -67,22 +61,21 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::prefix('products')->middleware('auth')->group(function () {
-        Route::get('/', [ProductsController::class, 'index'])->name('products');
+        Volt::route('products/index', 'products.index')->name('products.index');
+        Volt::route('products/create', 'products.create')->name('products.create');
+        Volt::route('products/edit/{id}', 'products.edit')->name('products.edit');
     });
 
-    Route::prefix('customers')->middleware('auth')->group(function () {
-        Route::get('/', [CustomersController::class, 'index'])->name('customers');
-    });
-
-        Route::prefix('sales')->middleware('auth')->group(function () {
-        Route::get('new_sale', [Sale::class, 'index'])->name('new_sale');
- 
+    Route::prefix('sales')->middleware('auth')->group(function () {
+        Volt::route('sales/index', 'sales.index')->name('sales.index');
+        Volt::route('sales/create', 'sales.create')->name('sales.create');
+        Volt::route('sales/edit/{id}', 'sales.edit')->name('sales.edit');
     });
 
     Route::prefix('detail')->middleware('auth')->group(function () {
-        Route::get('detail_sale', [Sale::class, 'index'])->name('detail_sale');
+        Volt::route('sale_details/index', 'sale_details.index')->name('sale_details.index');
+        Volt::route('sale_details/create', 'sale_details.create')->name('sale_details.create');
+        Volt::route('sale_details/edit/{id}', 'sale_details.edit')->name('sale_details.edit');
     });
-
-    /* ----- Prefijos MERO EJEMPLO USAREMOS VOLT ----- */
 
 require __DIR__.'/auth.php';
