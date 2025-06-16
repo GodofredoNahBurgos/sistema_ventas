@@ -18,7 +18,7 @@
         <flux:switch wire:model.change="userStates.{{ $user->id }}" />
     </td>
     <td class="border border-gray-300 text-center">
-        <flux:button icon="pencil" class="my-2 cursor-pointer" variant="primary"
+        <flux:button icon="pencil-square" class="my-2 cursor-pointer" variant="primary"
             wire:click="updateUser({{ $user->id }})">Editar</flux:button>
     </td>
 </tr>

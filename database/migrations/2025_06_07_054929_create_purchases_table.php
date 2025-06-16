@@ -17,7 +17,6 @@ return new class extends Migration
             $table->float('cost_price');
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('product_id')->constrained('products');
-            $table->foreignId('supplier_id')->constrained('suppliers');
             $table->timestamps();
         });
     }

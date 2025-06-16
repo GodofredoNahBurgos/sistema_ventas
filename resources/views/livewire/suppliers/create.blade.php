@@ -44,14 +44,14 @@ new class extends Component {
     <flux:heading size="xl">Crear Proveedor</flux:heading>
     <flux:text class="mt-2">Crea los proveedores de nuestros productos.</flux:text>
     <form wire:submit.prevent="create" class="flex flex-col gap-6 mt-4">
-        <flux:input type="text" label="{{__('Nombre')}}" wire:model="name" />
-        <flux:input type="text" label="{{__('Teléfono')}}" wire:model="phone" />
-        <flux:input type="email" label="{{__('Correo Electrónico')}}" wire:model="email" />
-        <flux:input type="text" label="{{__('CP')}}" wire:model="cp" />
-        <flux:input type="text" label="{{__('Sitio web')}}" wire:model="website" />
-        <flux:textarea label="Notas" placeholder="Notas adicionales sobre el proveedor" wire:model="notes" rows="auto" />
+        <flux:input type="text" label="{{__('Nombre')}}" wire:model.defer="name" />
+        <flux:input type="text" label="{{__('Teléfono')}}" wire:model.defer="phone" />
+        <flux:input type="email" label="{{__('Correo Electrónico')}}" wire:model.defer="email" />
+        <flux:input type="text" label="{{__('CP')}}" wire:model.defer="cp" />
+        <flux:input type="text" label="{{__('Sitio web')}}" wire:model.defer="website" />
+        <flux:textarea label="Notas" placeholder="Notas adicionales sobre el proveedor" wire:model.defer="notes" rows="auto" />
         <div class="flex items-center justify-start">
-            <flux:button icon="plus" variant="primary" type="submit" class="cursor-pointer">Crear Proveedor</flux:button>
+            <flux:button icon="plus" variant="primary" type="submit" class="cursor-pointer" wire:loading.attr="disabled">Crear Proveedor</flux:button>
             <flux:button icon="x-mark" variant="danger" type="button" class="mx-2"><a href="{{ route('suppliers.index') }}">Cancelar</a></flux:button>
         </div>
     </form>

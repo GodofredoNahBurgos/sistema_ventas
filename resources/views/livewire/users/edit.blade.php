@@ -54,10 +54,10 @@ new class extends Component {
 
     <form wire:submit="updateUser" class="flex flex-col gap-6 mt-4">
         <!-- Name -->
-        <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name"
+        <flux:input wire:model.defer="name" :label="__('Name')" type="text" required autofocus autocomplete="name"
             :placeholder="__('Full name')" />
 
-        <flux:select wire:model='role' label="Role">
+        <flux:select wire:model.defer='role' label="Role">
             <flux:select.option value="" disabled>
                 {{__('Select role...')}}
             </flux:select.option>
@@ -70,13 +70,14 @@ new class extends Component {
         </flux:select>
 
         <!-- Email Address -->
-        <flux:input wire:model="email" :label="__('Email address')" type="email" required autocomplete="email"
+        <flux:input wire:model.defer="email" :label="__('Email address')" type="email" required autocomplete="email"
             placeholder="email@example.com" />
 
-        <div class="flex items-center justify-end">
-            <flux:button type="submit" variant="primary" class="w-full cursor-pointer">
+        <div class="flex items-center justify-start">
+            <flux:button icon="arrow-path" type="submit" variant="primary" class="cursor-pointer" wire:loading.attr="disabled" >
                 {{ __('Actualizar') }}
             </flux:button>
+            <flux:button icon="x-mark" variant="danger" type="button" class="mx-2"><a href="{{ route('users.index') }}">Cancelar</a></flux:button>
         </div>
     </form>
 </div>

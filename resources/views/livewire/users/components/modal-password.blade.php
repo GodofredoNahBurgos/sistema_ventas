@@ -8,7 +8,7 @@
         <div class="flex">
             <flux:spacer />
             <flux:button class="cursor-pointer" wire:click="changePassword({{ $selectedUserId }})" type="submit"
-                variant="primary">Actualizar</flux:button>
+                variant="primary" wire:loading.attr="disabled">Actualizar</flux:button>
         </div>
     </div>
 </flux:modal>

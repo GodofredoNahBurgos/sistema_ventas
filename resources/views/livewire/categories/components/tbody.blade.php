@@ -8,7 +8,7 @@
     <td class="border border-gray-300 text-center">{{ $category->name }}</td>
     <td class="border border-gray-300 text-center">
         <div class="flex justify-around gap-2">
-            <flux:button icon="pencil" class="my-2 cursor-pointer" variant="primary"
+            <flux:button icon="pencil-square" class="my-2 cursor-pointer" variant="primary"
                 wire:click="updateCategory({{ $category->id }})">Editar</flux:button>
             <flux:modal.trigger name="delete-category">
                 <flux:button wire:click="confirmDelete({{ $category->id }})" icon="trash" class="my-2 cursor-pointer"

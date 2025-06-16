@@ -64,18 +64,27 @@ Route::middleware(['auth'])->group(function () {
         Volt::route('products/index', 'products.index')->name('products.index');
         Volt::route('products/create', 'products.create')->name('products.create');
         Volt::route('products/edit/{id}', 'products.edit')->name('products.edit');
+        Volt::route('products/show-image/{image_id}', 'products.show-image')->name('products.show-image');
+    });
+
+    Route::prefix('product_reports')->middleware('auth')->group(function () {
+        Volt::route('product_reports/index', 'product_reports.index')->name('product_reports.index');
+        Volt::route('product_reports/slow-stock', 'product_reports.slow-stock')->name('product_reports.slow-stock');
+    });
+
+    Route::prefix('purchases')->middleware('auth')->group(function () {
+        Volt::route('purchases/index', 'purchases.index')->name('purchases.index');
+        Volt::route('purchases/create/{product_id}', 'purchases.create')->name('purchases.create');
+        Volt::route('purchases/edit/{id}', 'purchases.edit')->name('purchases.edit');
     });
 
     Route::prefix('sales')->middleware('auth')->group(function () {
         Volt::route('sales/index', 'sales.index')->name('sales.index');
-        Volt::route('sales/create', 'sales.create')->name('sales.create');
-        Volt::route('sales/edit/{id}', 'sales.edit')->name('sales.edit');
     });
 
     Route::prefix('detail')->middleware('auth')->group(function () {
         Volt::route('sale_details/index', 'sale_details.index')->name('sale_details.index');
-        Volt::route('sale_details/create', 'sale_details.create')->name('sale_details.create');
-        Volt::route('sale_details/edit/{id}', 'sale_details.edit')->name('sale_details.edit');
+        Volt::route('sale_details/sale_detail/{sale_id}', 'sale_details.sale_detail')->name('sale_details.sale_detail');
     });
 
 require __DIR__.'/auth.php';

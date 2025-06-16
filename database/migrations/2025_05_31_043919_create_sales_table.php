@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
-            $table->float('total_cost');
+            $table->float('total_sale');
             $table->foreignId('user_id')
             ->constrained('users');
             $table->timestamps();

@@ -50,13 +50,13 @@ new class extends Component {
     <flux:heading size="xl">Actualizar Proveedor</flux:heading>
     <flux:text class="mt-2">Actualiza los proveedores de nuestros productos.</flux:text>
     <form wire:submit.prevent="update" class="mt-4">
-        <flux:input type="text" label="{{__('Nombre')}}" wire:model="name" value="{{ $name }}"/>
-        <flux:input type="text" label="{{__('Teléfono')}}" wire:model="phone" value="{{ $phone }}" />
-        <flux:input type="email" label="{{__('Correo Electrónico')}}" wire:model="email" value="{{ $email }}" />
-        <flux:input type="text" label="{{__('CP')}}" wire:model="cp" value="{{ $cp }}" />
-        <flux:input type="text" label="{{__('Sitio web')}}" wire:model="website" value="{{ $website }}" />
-        <flux:textarea label="Notas" placeholder="Notas adicionales sobre el proveedor" wire:model="notes" rows="auto" value="{{ $notes }}" />
-        <flux:button icon="plus" variant="primary" type="submit" class="mt-4 cursor-pointer">Actualizar Proveedor</flux:button>
+        <flux:input type="text" label="{{__('Nombre')}}" wire:model.defer="name" value="{{ $name }}"/>
+        <flux:input type="text" label="{{__('Teléfono')}}" wire:model.defer="phone" value="{{ $phone }}" />
+        <flux:input type="email" label="{{__('Correo Electrónico')}}" wire:model.defer="email" value="{{ $email }}" />
+        <flux:input type="text" label="{{__('CP')}}" wire:model.defer="cp" value="{{ $cp }}" />
+        <flux:input type="text" label="{{__('Sitio web')}}" wire:model.defer="website" value="{{ $website }}" />
+        <flux:textarea label="Notas" placeholder="Notas adicionales sobre el proveedor" wire:model.defer="notes" rows="auto" value="{{ $notes }}" />
+        <flux:button icon="arrow-path" variant="primary" type="submit" class="mt-4 cursor-pointer" wire:loading.attr="disabled" >Actualizar Proveedor</flux:button>
         <flux:button icon="x-mark" variant="danger" type="button" class="mt-4"><a href="{{ route('suppliers.index') }}">Cancelar</a></flux:button>
     </form>
 </div>

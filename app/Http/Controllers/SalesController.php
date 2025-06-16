@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
 
 class SalesController extends Controller
 {
@@ -11,7 +12,9 @@ class SalesController extends Controller
      */
     public function index()
     {
-        return view('livewire.sales.index');
+        $title = 'Sales';
+        $products = Product::all();
+        return view('livewire.sales.index', compact('title', 'products'));
     }
 
     /**

@@ -13,7 +13,7 @@
     <td class="border border-gray-300 text-center">{{ $supplier->notes }}</td>
     <td class="border border-gray-300 text-center">
         <div class="flex justify-around gap-2">
-            <flux:button icon="pencil" class="my-2 cursor-pointer" variant="primary"
+            <flux:button icon="pencil-square" class="my-2 cursor-pointer" variant="primary"
                 wire:click="updateSupplier({{ $supplier->id }})">Editar</flux:button>
             <flux:modal.trigger name="delete-supplier">
                 <flux:button wire:click="confirmDelete({{ $supplier->id }})" icon="trash" class="my-2 cursor-pointer"
