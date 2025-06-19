@@ -3,7 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -19,6 +20,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        /* Para permisos solo para las vistas de los menus. */
+        Gate::define('admin', function (User $user) {
+            return $user->role === 'admin';
+        });
+        Gate::define('all-users', function (User $user) {
+            return in_array($user->role, ['admin', 'cashier']);
+        });
     }
 }

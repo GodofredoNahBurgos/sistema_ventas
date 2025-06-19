@@ -46,7 +46,6 @@ new class extends Component {
                     <th class="border border-gray-300 text-center">Cantdad</th>
                     <th class="border border-gray-300 text-center">Precio Unitario</th>
                     <th class="border border-gray-300 text-center">Subtotal</th>
-                    <th class="border border-gray-300 text-center">Revocar Venta</th>
                 </tr>
             </thead>
             <tbody>
@@ -55,5 +54,4 @@ new class extends Component {
         </table>
     </div>
     <flux:button icon="arrow-left" variant="primary" class="m-2 self-end"><a href="{{ route('sale_details.index') }}">Regresar</a></flux:button>
-    {{-- @include('livewire.categories.components.modal-delete') --}}
 </div>

@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        /* Registramos el Middleware */
+        $middleware->alias([
+            'Checkrole' => App\Http\Middleware\Checkrole::class
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -179,8 +179,9 @@ return [
          *
          * @var string
          */
-        'default_font' => 'serif',
+        'default_font' => 'sans-serif',
 
+        /* SOLO ERA SERIF */
         /**
          * Image DPI setting
          *

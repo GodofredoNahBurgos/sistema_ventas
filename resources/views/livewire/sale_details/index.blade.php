@@ -3,9 +3,18 @@
 use Livewire\Volt\Component;
 use App\Models\Sale;
 use App\Models\SaleDetails;
+use App\Models\Product;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
+use Dompdf\Dompdf;
+use Illuminate\Http\Response;
 
 new class extends Component {
+    public $sale;
+    /* public $details; */
     public $sales;
+    public $selectedSaleId;
+    /* public $selectedSale; */
     public function mount()
     {
         $this->sales = Sale::select(
@@ -19,6 +28,32 @@ new class extends Component {
     public function detailSale($id){
         return redirect()->route('sale_details.sale_detail', ['sale_id' => $id]);
     }
+    public function confirmRevoke($id){
+        $this->selectedSaleId = $id;
+    }
+    public function revoke($id)
+    {
+        DB::beginTransaction();
+        try {
+            $detailsSelect = SaleDetails::select('product_id', 'quantity')
+            ->where('sale_id', '=', $id)
+            ->get();
+            /* Devolver el stock */
+            foreach ($detailsSelect as $detail) {
+                $product = Product::where('id',$detail->product_id)
+                ->increment('quantity', $detail->quantity);
+            }
+            /* Eliminar productos */
+            SaleDetails::where('sale_id', $id)->delete();
+            Sale::where('id', $id)->delete();
+            DB::commit();
+            return redirect()->route('sale_details.index')->with('success', 'Venta revocada exitosamente.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->route('sale_details.index')->with('danger', 'Error al revocar la venta: ' . $th->getMessage());
+        }
+    }
+
 }; ?>
 
 <div>
@@ -34,10 +69,12 @@ new class extends Component {
         <table class="table-auto w-full">
             <thead class="">
                 <tr>
+                    <th class="border border-gray-300 text-center">ID</th>
                     <th class="border border-gray-300 text-center">Total Vendido</th>
                     <th class="border border-gray-300 text-center">Fecha</th>
                     <th class="border border-gray-300 text-center">Usuario</th>
                     <th class="border border-gray-300 text-center">Ver Detalle</th>
+                    <th class="border border-gray-300 text-center">Imprimir Ticket</th>
                     <th class="border border-gray-300 text-center">Revocar Venta</th>
                 </tr>
             </thead>
@@ -46,4 +83,5 @@ new class extends Component {
             </tbody>
         </table>
     </div>
+    @include('livewire.sale_details.components.modal-revoke')
 </div>
