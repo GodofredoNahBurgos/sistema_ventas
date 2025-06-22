@@ -2,111 +2,113 @@
 
 use Livewire\Volt\Component;
 use App\Models\Product;
+use App\Models\Image;
+use Livewire\WithPagination;
 
 new class extends Component {
-    public $productStates = [];
-    public $products;
+    use WithPagination;
+    public $search = '';
     public $selectedProductId = null;
     public $selectedProductName = null;
-    public $supplier_name;
-    public $category_name;
-    public function mount(){
-        /* @dump('Se está ejecutando el metodo mount'); */
-        $this->products = Product::select(
+
+    public function getProductsProperty()
+    {
+        return Product::select(
             'products.*',
             'categories.name as category_name',
             'suppliers.name as supplier_name',
             'images.path as image_path',
             'images.id as image_id'
-        )
-        ->join('categories', 'products.category_id', '=', 'categories.id')
-        ->join('suppliers', 'products.supplier_id', '=', 'suppliers.id')
-        ->leftjoin('images', 'products.id', '=', 'images.product_id')
-        ->get();
-        foreach ($this->products as $product) {
-            if ($product->active) {
-                $this->productStates[$product->id] = true;
-            }else{
-                $this->productStates[$product->id] = false;
-            }
-        }
+            )
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->join('suppliers', 'products.supplier_id', '=', 'suppliers.id')
+            ->leftjoin('images', 'products.id', '=', 'images.product_id')
+            ->where(function ($query) {
+                $query->where('products.name', 'like', '%' . $this->search . '%')
+                ->orWhere('products.code', 'like', '%' . $this->search . '%');
+            })->paginate(4);
     }
-    public function updateProduct($id){
-        return redirect()->route('products.edit', ['id' => $id]);
+    public function getCurrentPage()
+    {
+    return $this->getPage();
     }
-    public function updateImage($image_id){
-        return redirect()->route('products.show-image', ['image_id' => $image_id]);
+    public function updatedSearch()
+    {
+        $this->resetPage();
     }
     public function confirmDelete($id){
         $this->selectedProductId = $id;
         $this->selectedProductName = Product::find($id)->name;
     }
-    public function delete($id){
+    public function delete($id)
+    {
         try {
-            Product::find($id)->delete();
+            $product = Product::find($id);
+            $imageModel = Image::where('product_id', $product->id)->first();
+            if ($imageModel->path && Storage::disk('public')->exists($imageModel->path)) {
+                Storage::disk('public')->delete($imageModel->path);
+            }
+            $product->delete();
             Flux::modal('delete-product')->close();
-            session()->flash('danger', 'Producto eliminado correctamente.');
-            return redirect()->route('products.index');
+            session()->flash('success', 'Producto eliminado correctamente.');
         } catch (\Throwable $th) {
             session()->flash('danger', 'Error al eliminar el producto: ' . $th->getMessage());
         }
-        $this->selectedProductId = null;
-        $this->selectedProductName = null;
+        $this->resetSelectedProduct();
+        $this->resetPage();
     }
-    public function updatedProductStates($value, $key){
+    public function updateProductState($user_id)
+    {
         try {
-            $product = Product::find($key);
+            $product = Product::find($user_id);
             if ($product) {
-                $product->active = $value;
+                $product->active = !$product->active;
                 $product->save();
-                if ($value) {
+                if ($product->active){
                     session()->flash('success', 'Producto activado correctamente.');
                 } else {
                     session()->flash('danger', 'Producto desactivado correctamente.');
                 }
             }
         } catch (\Throwable $th) {
-            session()->flash('danger', 'Error al actualizar el estado del usuario: ' . $th->getMessage());
+            session()->flash('danger', 'Error al actualizar el estado del producto: ' . $th->getMessage());
         }
     }
+    public function updateProduct($id)
+    {
+        return redirect()->route('products.edit', ['id' => $id]);
+    }
+    public function updateImage($image_id)
+    {
+        return redirect()->route('products.show-image', ['image_id' => $image_id]);
+    }
+    public function resetSelectedProduct()
+    {
+        $this->reset('selectedProductId', 'selectedProductName');
+    }
+
 }; ?>
 
 <div>
-    <div class="flex flex-col">
-        <flux:heading size="xl">Productos y Stock</flux:heading>
-        <flux:text class="mt-2">Administrar el stock del sistema.</flux:text>
-        <div class="m-2 w-full h-16 flex justify-end">
-            @include('livewire.products.components.messages')
-            <flux:button icon="plus" variant="primary" class="m-2 self-end">
-                <a href="{{ route('products.create') }}" wire:navigate>{{ __('Crear Producto') }}</a>
-            </flux:button>
+    <div class="flex justify-between items-end flex-wrap w-full mb-4">
+        <div class="text-left">
+            <flux:heading size="xl">Productos y Stock</flux:heading>
+            <flux:text class="mt-2">Administrar el stock del sistema.</flux:text>
+        </div>
+        <div class="flex items-center space-x-4 mt-2">
+            <flux:input icon="magnifying-glass-plus" type="search" label="Buscar Productos" size="30"
+                wire:model.live="search"></flux:input>
+            <div class="pt-6">
+                <flux:button icon="plus" variant="primary">
+                    <a href="{{ route('products.create') }}">{{ __('Crear Producto') }}</a>
+                </flux:button>
+            </div>
         </div>
     </div>
+    @include('livewire.products.components.messages')
     <flux:separator class="my-4" text="Datos" />
-    <div class="overflow-x-auto">
-        <table wire:ignore class="table-auto w-full">
-            <thead class="">
-                <tr>
-                    <th class="border border-gray-300 text-center">Codigo</th>
-                    <th class="border border-gray-300 text-center">Categoria</th>
-                    <th class="border border-gray-300 text-center">Proveedor</th>
-                    <th class="border border-gray-300 text-center">Nombre</th>
-                    <th class="border border-gray-300 text-center">Imagen</th>
-                    <th class="border border-gray-300 text-center">Descripción</th>
-                    <th class="border border-gray-300 text-center">Cantidad</th>
-                    <th class="border border-gray-300 text-center">Compra</th>
-                    <th class="border border-gray-300 text-center">Venta</th>
-                    <th class="border border-gray-300 text-center">Activo</th>
-                    <th class="border border-gray-300 text-center">Comprar</th>
-                    <th class="border border-gray-300 text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @include('livewire.products.components.tbody')
-            </tbody>
-        </table>
+    <div wire:key="users-table-{{ $search }}-page{{ $this->getCurrentPage() }}">
+        @include('livewire.products.components.table')
     </div>
     @include('livewire.products.components.modal-delete')
 </div>
-
-@livewireScripts

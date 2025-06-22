@@ -3,8 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
-/* MERO EJEPLO USAREMOS VOLT */
-
 use App\Http\Controllers\Sale;
 use App\Http\Controllers\SaleDetailsController;
 use App\Http\Controllers\CategoriesController;
@@ -14,15 +12,9 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\DashboardController;
 
-/* MERO EJEPLO USAREMOS VOLT */
-
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
-
-/* Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard'); */
 
 Route::get('dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -72,7 +64,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('product_reports')->middleware('auth', 'Checkrole:admin')->group(function () {
         Volt::route('product_reports/index', 'product_reports.index')->name('product_reports.index');
-        Volt::route('product_reports/slow-stock', 'product_reports.slow-stock')->name('product_reports.slow-stock');
+        Volt::route('product_reports/index-slow', 'product_reports.index-slow')->name('product_reports.index-slow');
+        Route::get('product_reports/pdf', [PdfController::class, 'productsStock'])->name('products.pdf');
+        Route::get('product_reports/pdf-min', [PdfController::class, 'productsStockMin'])->name('products-min.pdf');
     });
 
     Route::prefix('purchases')->middleware('auth', 'Checkrole:admin')->group(function () {

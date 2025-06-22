@@ -14,8 +14,7 @@
             variant="primary">Detalle</flux:button>
     </td>
     <td class="border border-gray-300 text-center">
-        <flux:button href="{{route('ticket.pdf', ['sale_id' => $sale->id])}}" target="_blank" {{-- wire:click="printTicket({{ $sale->id }})" --}} icon="printer" class="my-2 cursor-pointer" variant="primary">Imprimir
-    <a href=""></a>    
+        <flux:button href="{{route('ticket.pdf', ['sale_id' => $sale->id])}}" target="_blank" {{-- wire:click="printTicket({{ $sale->id }})" --}} icon="printer" class="my-2 cursor-pointer" variant="primary">Imprimir   
     </flux:button>
     </td>
     <td class="border border-gray-300 text-center">

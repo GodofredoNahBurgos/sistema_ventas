@@ -13,10 +13,10 @@
         <div class="flex gap-2">
             <flux:spacer />
             <flux:modal.close>
-                <flux:button class="cursor-pointer" icon="x-mark" variant="primary">Cancelar</flux:button>
+                <flux:button class="cursor-pointer" icon="x-mark" variant="primary" wire:click="resetSelectedProduct">Cancelar</flux:button>
             </flux:modal.close>
             <flux:button class="cursor-pointer" icon="trash" variant="danger"
-                wire:click="delete({{ $selectedProductId }})">Eliminar
+                wire:click="delete({{ $selectedProductId }})" wire:loading.attr="disabled">Eliminar
             </flux:button>
         </div>
     </div>

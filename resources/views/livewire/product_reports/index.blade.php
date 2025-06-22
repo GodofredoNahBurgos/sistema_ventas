@@ -5,24 +5,38 @@ use App\Models\Product;
 /* Para manejo de excel */
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-/* Para manejo de PDF */
-use Barryvdh\DomPDF\Facade\Pdf;
+use Livewire\WithPagination;
 
 new class extends Component {
-    public $products;
-    public function mount()
+    use WithPagination;
+
+    public function getProductsProperty()
     {
-        $this->products = Product::select(
+        return Product::select(
             'products.*',
             'categories.name as category_name',
             'suppliers.name as supplier_name',
             'images.path as image_path',
             'images.id as image_id'
-        )
-        ->join('categories', 'products.category_id', '=', 'categories.id')
-        ->join('suppliers', 'products.supplier_id', '=', 'suppliers.id')
-        ->leftjoin('images', 'products.id', '=', 'images.product_id')
-        ->get();
+            )
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->join('suppliers', 'products.supplier_id', '=', 'suppliers.id')
+            ->leftjoin('images', 'products.id', '=', 'images.product_id')
+            ->get();
+    }
+    public function getProductsTableProperty()
+    {
+        return Product::select(
+            'products.*',
+            'categories.name as category_name',
+            'suppliers.name as supplier_name',
+            'images.path as image_path',
+            'images.id as image_id'
+            )
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->join('suppliers', 'products.supplier_id', '=', 'suppliers.id')
+            ->leftjoin('images', 'products.id', '=', 'images.product_id')
+            ->paginate(5);
     }
     public function exportAllProductsExcel()
     {
@@ -36,7 +50,6 @@ new class extends Component {
         $sheet->setCellValue('E1', 'Precio Compra');
         $sheet->setCellValue('F1', 'Precio Venta');
 
-        $this->mount();
         $data = $this->products;
 
         $row = 2;
@@ -50,6 +63,13 @@ new class extends Component {
             $row++;
         }
 
+        /* $writer = new Xlsx($spreadsheet);
+        $filename = 'productos.xlsx';
+        $filepath = storage_path("app/public/{$filename}");
+        $writer->save($filepath);
+
+        return response()->download($filepath)->deleteFileAfterSend(true); */
+        
         return response()->streamDownload(function () use ($spreadsheet) {
             $writer = new Xlsx($spreadsheet);
             $writer->save('php://output');
@@ -57,53 +77,26 @@ new class extends Component {
 
     }
     
-    public function exportPDF()
-    {
-        $this->mount();
-        $products = $this->products;
-        $pdf = Pdf::loadView('livewire.product_reports.components.products_pdf', ['products' => $products], [], 'UTF-8')->setPaper('a4', 'portrait');
-        return response()->streamDownload(function () use ($pdf) {
-            echo $pdf->stream();
-        }, 'productos.pdf');
-    }
 }; ?>
 
 <div>
     <div class="flex flex-col">
         <flux:heading size="xl">Reportes de productos</flux:heading>
         <flux:text class="mt-2">Administrar los reportes de nuestros productos.</flux:text>
-        <div class="m-2 w-full {{-- h-16 --}} flex justify-around">
+        <div class="m-4 w-full flex justify-around">
             <flux:button icon="clipboard-document-list" variant="primary" wire:click="exportAllProductsExcel"
                 class="cursor-pointer">
                 Exportar en Excel
             </flux:button>
-            <flux:button icon="clipboard-document-list" variant="primary" wire:click='exportPDF' class="cursor-pointer">
+            <flux:button href="{{route('products.pdf')}}" target="_blank" icon="clipboard-document-list" variant="primary" class="cursor-pointer" >
                 Exportar en PDF
             </flux:button>
             <flux:button icon="clipboard-document-list" variant="danger">
-                <a href="{{ route('product_reports.slow-stock') }}" wire:navigate>{{ __('Productos en stock minimo')
+                <a href="{{ route('product_reports.index-slow') }}">{{ __('Productos en stock minimo')
                     }}</a>
             </flux:button>
         </div>
     </div>
     <flux:separator class="my-4" text="Datos" />
-    <div class="overflow-x-auto">
-        <table wire:ignore class="table-auto w-full">
-            <thead class="">
-                <tr>
-                    <th class="border border-gray-300 text-center">Categoria</th>
-                    <th class="border border-gray-300 text-center">Proveedor</th>
-                    <th class="border border-gray-300 text-center">Nombre</th>
-                    <th class="border border-gray-300 text-center">Imagen</th>
-                    <th class="border border-gray-300 text-center">Descripción</th>
-                    <th class="border border-gray-300 text-center">Cantidad</th>
-                    <th class="border border-gray-300 text-center">Compra</th>
-                    <th class="border border-gray-300 text-center">Venta</th>
-                </tr>
-            </thead>
-            <tbody>
-                @include('livewire.product_reports.components.tbody')
-            </tbody>
-        </table>
-    </div>
+    @include('livewire.product_reports.components.table')
 </div>

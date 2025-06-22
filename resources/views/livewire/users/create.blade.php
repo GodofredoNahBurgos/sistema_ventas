@@ -30,8 +30,10 @@ new class extends Component {
 
         try {
             event(new Registered(($user = User::create($validated))));
+            $this->reset();
             return redirect()->route('users.index')->with('success', __('User created successfully.'));
         } catch (\Throwable $th) {
+            $this->reset();
             return redirect()->route('users.index')->with('danger', __('Error al crear el usuario: :message', ['message' => $th->getMessage()]));
         }
     
@@ -42,7 +44,7 @@ new class extends Component {
 <div>
     <flux:heading size="xl">Registrar Usuarios</flux:heading>
     <flux:text class="mt-2">Crea los usuarios de nuestra aplicacion.</flux:text>
-    <form wire:submit="register" class="flex flex-col gap-6 mt-4">
+    <form wire:submit.prevent="register" class="flex flex-col gap-6 mt-4">
         <flux:input wire:model.defer="name" :label="__('Name')" type="text" required autofocus autocomplete="name"
             :placeholder="__('Full name')" />
         <flux:select wire:model.defer='role' label="Role">

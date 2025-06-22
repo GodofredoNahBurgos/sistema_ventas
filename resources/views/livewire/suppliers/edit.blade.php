@@ -4,17 +4,16 @@ use Livewire\Volt\Component;
 use App\Models\Supplier;
 
 new class extends Component {
-    public $id;
+    public int $id;
     public $name;
     public $phone;
     public $email;
     public $cp;
     public $website;
     public $notes;
-    public function mount($id)
+    public function mount()
     {
-        $supplier = Supplier::find($id);
-        $this->id = $supplier->id;
+        $supplier = Supplier::find($this->id);
         $this->name = $supplier->name;
         $this->phone = $supplier->phone;
         $this->email = $supplier->email;
@@ -30,7 +29,7 @@ new class extends Component {
             'email' => 'required|email|max:255',
             'cp' => 'required|string|max:10',
             'website' => 'nullable|url|max:255',
-            'notes' => 'nullable|string|max:500',
+            'notes' => 'nullable|string|max:255',
         ]);
 
         try {
@@ -38,9 +37,11 @@ new class extends Component {
             $supplier->fill($validated);
             $supplier->save();
             session()->flash('success', __('Proveedor actualizado exitosamente.'));
+            $this->reset();
             return redirect()->route('suppliers.index');
         } catch (\Throwable $th) {
             session()->flash('danger', __('Error al actualizar el proveedor: ') . $th->getMessage());
+            $this->reset();
             return redirect()->route('suppliers.index');
         }
     }
@@ -49,14 +50,16 @@ new class extends Component {
 <div>
     <flux:heading size="xl">Actualizar Proveedor</flux:heading>
     <flux:text class="mt-2">Actualiza los proveedores de nuestros productos.</flux:text>
-    <form wire:submit.prevent="update" class="mt-4">
+    <form wire:submit.prevent="update" class="flex flex-col gap-6 mt-4">
         <flux:input type="text" label="{{__('Nombre')}}" wire:model.defer="name" value="{{ $name }}"/>
         <flux:input type="text" label="{{__('Teléfono')}}" wire:model.defer="phone" value="{{ $phone }}" />
         <flux:input type="email" label="{{__('Correo Electrónico')}}" wire:model.defer="email" value="{{ $email }}" />
         <flux:input type="text" label="{{__('CP')}}" wire:model.defer="cp" value="{{ $cp }}" />
         <flux:input type="text" label="{{__('Sitio web')}}" wire:model.defer="website" value="{{ $website }}" />
         <flux:textarea label="Notas" placeholder="Notas adicionales sobre el proveedor" wire:model.defer="notes" rows="auto" value="{{ $notes }}" />
-        <flux:button icon="arrow-path" variant="primary" type="submit" class="mt-4 cursor-pointer" wire:loading.attr="disabled" >Actualizar Proveedor</flux:button>
-        <flux:button icon="x-mark" variant="danger" type="button" class="mt-4"><a href="{{ route('suppliers.index') }}">Cancelar</a></flux:button>
+        <div class="flex items-center justify-start">
+            <flux:button icon="arrow-path" variant="primary" type="submit" class="mt-4 cursor-pointer" wire:loading.attr="disabled" >Actualizar Proveedor</flux:button>
+        <flux:button icon="x-mark" variant="danger" type="button" class="mx-2 mt-4"><a href="{{ route('suppliers.index') }}">Cancelar</a></flux:button>
+        </div>
     </form>
 </div>

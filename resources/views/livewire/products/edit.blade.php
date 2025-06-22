@@ -6,7 +6,7 @@ use App\Models\Category;
 use App\Models\Supplier;
 
 new class extends Component {
-    public $id;
+    public int $id;
     public $code;
     public $name;
     public $description;
@@ -15,11 +15,11 @@ new class extends Component {
     public $suppliers;
     public $categorySelected;
     public $supplierSelected;
-    public function mount($id){
-        $product = Product::find($id);
+    
+    public function mount(){
+        $product = Product::find($this->id);
         $this->categories = Category::all();
         $this->suppliers = Supplier::all();
-        $this->id = $product->id;
         $this->code = $product->code;
         $this->name = $product->name;
         $this->description = $product->description;
@@ -46,8 +46,10 @@ new class extends Component {
             $product->sale_price = $this->sale_price;
             $product->save();
             session()->flash('success', __('Producto actualizado exitosamente.'));
+            $this->reset();
             return redirect()->route('products.index');
         } catch (\Throwable $th) {
+            $this->reset();
             return redirect()->route('products.index')->with('danger', 'Error al actualizar el producto: ' . $th->getMessage());
         }
     }
@@ -57,8 +59,8 @@ new class extends Component {
     <flux:heading size="xl">Actualizar Producto</flux:heading>
     <flux:text class="mt-2">Actualiza los productos de nuestra aplicación.</flux:text>
     <form wire:submit.prevent="update" class="flex flex-col gap-6 mt-4">
-        <flux:input type="text" label="Codigo" wire:model="code" />
-        <flux:select wire:model='categorySelected' label="Categoria">
+        <flux:input type="text" label="Codigo" wire:model.defer="code" />
+        <flux:select wire:model.defer='categorySelected' label="Categoria">
             <flux:select.option value="" disabled>
                 {{__('Seleccionar categoria ...')}}
             </flux:select.option>
@@ -68,7 +70,7 @@ new class extends Component {
             </flux:select.option>
             @endforeach
         </flux:select>
-        <flux:select wire:model='supplierSelected' label="Proveedor">
+        <flux:select wire:model.defer='supplierSelected' label="Proveedor">
             <flux:select.option value="" disabled>
                 {{__('Seleccionar proveedor ...')}}
             </flux:select.option>
@@ -78,12 +80,12 @@ new class extends Component {
             </flux:select.option>
             @endforeach
         </flux:select>
-        <flux:input type="text" label="{{__('Nombre')}}" wire:model="name" />
-        <flux:textarea label="Descripción" placeholder="Descripción sobre el producto" wire:model="description"
+        <flux:input type="text" label="{{__('Nombre')}}" wire:model.defer="name" />
+        <flux:textarea label="Descripción" placeholder="Descripción sobre el producto" wire:model.defer="description"
             rows="auto" />
-        <flux:input type="text" label="Precio de Venta" wire:model="sale_price" />
+        <flux:input type="text" label="Precio de Venta" wire:model.defer="sale_price" />
         <div class="flex items-center justify-start">
-            <flux:button icon="arrow-path" variant="primary" type="submit" class="cursor-pointer">Actualizar Producto
+            <flux:button icon="arrow-path" variant="primary" type="submit" class="cursor-pointer" wire:loading.attr="disabled">Actualizar Producto
             </flux:button>
             <flux:button icon="x-mark" variant="danger" type="button" class="mx-2"><a
                     href="{{ route('products.index') }}">Cancelar</a></flux:button>

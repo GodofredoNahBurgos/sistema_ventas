@@ -30,23 +30,5 @@ new class extends Component {
         </div>
     </div>
     <flux:separator class="my-4" text="Datos" />
-    <div class="overflow-x-auto">
-        <table wire:ignore class="table-auto w-full">
-            <thead class="">
-                <tr>
-                    <th class="border border-gray-300 text-center">Usuario</th>
-                    <th class="border border-gray-300 text-center">Producto</th>
-                    <th class="border border-gray-300 text-center">Cantidad</th>
-                    <th class="border border-gray-300 text-center">Precio de compra</th>
-                    <th class="border border-gray-300 text-center">Total</th>
-                    <th class="border border-gray-300 text-center">Fecha</th>
-                    <th class="border border-gray-300 text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @include('livewire.purchases.components.tbody')
-            </tbody>
-        </table>
-    </div>
-    {{-- @include('livewire.products.components.modal-delete') --}}
+    @include('livewire.purchases.components.tbody')
 </div>

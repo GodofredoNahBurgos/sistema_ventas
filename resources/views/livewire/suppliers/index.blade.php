@@ -2,13 +2,23 @@
 
 use Livewire\Volt\Component;
 use App\Models\Supplier;
+use Livewire\WithPagination;
 
 new class extends Component {
-    public $suppliers;
+    use WithPagination;
+    public $search = '';
     public $selectedSupplierId = null;
     public $selectedSupplierName = null;
-    public function mount(){
-        $this->suppliers = Supplier::all();
+    /* Getter */
+    public function getSuppliersProperty()
+    {
+        return Supplier::query()
+        ->where('name', 'like', '%' . $this->search . '%')
+        ->paginate(5);
+    }
+    public function updatedSearch()
+    {
+        $this->resetPage();
     }
     public function updateSupplier($id){
         return redirect()->route('suppliers.edit', ['id' => $id]);
@@ -17,52 +27,43 @@ new class extends Component {
         $this->selectedSupplierId = $id;
         $this->selectedSupplierName = Supplier::find($id)->name;
     }
+    public function resetSelectedSupplier()
+    {
+        $this->reset('selectedSupplierId', 'selectedSupplierName');
+    }
     public function delete($id){
         try {
             $supplier = Supplier::find($id);
             if ($supplier) {
                 $supplier->delete();
-                $this->suppliers = Supplier::all();
             }
             Flux::modal('delete-supplier')->close();
             session()->flash('danger', 'Proveedor eliminado correctamente.');
         } catch (\Throwable $th) {
             session()->flash('danger', 'Error al eliminar el proveedor: ' . $th->getMessage());
         }
-        $this->selectedSupplierId = null;
-        $this->selectedSupplierName = null;
+        $this->resetSelectedSupplier();
+        $this->resetPage();
     }
 }; ?>
 
 <div>
-    <div class="flex flex-col">
-        <flux:heading size="xl">Proveedores</flux:heading>
-        <flux:text class="mt-2">Administrar los proveedores de nuestros productos.</flux:text>
-        <div class="m-2 w-full h-16 flex justify-end">
-            @include('livewire.suppliers.components.messages')
-            <flux:button icon="plus" variant="primary" class="m-2 self-end">
-                <a href="{{ route('suppliers.create') }}" wire:navigate>{{ __('Crear Proveedor') }}</a>
-            </flux:button>
+    <div class="flex justify-between items-end flex-wrap w-full mb-4">
+        <div class="text-left">
+            <flux:heading size="xl">Proveedores</flux:heading>
+            <flux:text class="mt-2">Administrar los proveedores de nuestros productos.</flux:text>
+        </div>
+        <div class="flex items-center space-x-4 mt-2">
+            <flux:input icon="magnifying-glass-plus" type="search" label="Buscar Proveedores" size="30" wire:model.live="search"></flux:input>
+            <div class="pt-6">
+                <flux:button icon="plus" variant="primary" >
+                    <a href="{{ route('suppliers.create') }}">{{ __('Crear Proveedor') }}</a>
+                </flux:button>
+            </div>
         </div>
     </div>
-    <flux:separator class="my-4" text="Datos" />
-    <div class="overflow-x-auto">
-        <table class="table-auto w-full">
-            <thead class="">
-                <tr>
-                    <th class="border border-gray-300 text-center">Nombre</th>
-                    <th class="border border-gray-300 text-center">Teléfono</th>
-                    <th class="border border-gray-300 text-center">Correo Electrónico</th>
-                    <th class="border border-gray-300 text-center">CP</th>
-                    <th class="border border-gray-300 text-center">Sitio web</th>
-                    <th class="border border-gray-300 text-center">Notas</th>
-                    <th class="border border-gray-300 text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @include('livewire.suppliers.components.tbody')
-            </tbody>
-        </table>
-    </div>
-    @include('livewire.suppliers.components.modal-delete')
+@include('livewire.suppliers.components.messages')
+<flux:separator class="my-4" text="Datos" />
+@include('livewire.suppliers.components.table')
+@include('livewire.suppliers.components.modal-delete')
 </div>

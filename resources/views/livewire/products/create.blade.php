@@ -5,22 +5,24 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Supplier;
 use App\Models\Image;
+use Livewire\WithFileUploads;
 
-use Livewire\WithFileUploads; // Importante para subir archivos
 new class extends Component {
-    use WithFileUploads; // Trae la funcionalidad para subir archivos
+    use WithFileUploads;
     public $code;
     public $name;
     public $description;
+    public $image;
     public $categorySelected = '';
     public $supplierSelected = '';
-    public $categories;
-    public $suppliers;
-    public $image;
-    public function mount()
+
+    public function getCategoriesProperty()
     {
-        $this->categories = Category::all();
-        $this->suppliers = Supplier::all();
+        return Category::all();
+    }
+    public function getSuppliersProperty()
+    {
+        return Supplier::all();
     }
     public function create()
     {
@@ -31,9 +33,12 @@ new class extends Component {
             'categorySelected' => 'required|exists:categories,id',
             'supplierSelected' => 'required|exists:suppliers,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'image.max' => 'La imagen no debe superar los 2 MB.',
+            'image.mimes' => 'El formato de la imagen debe ser jpeg, png, jpg o gif.',
+            'image.image' => 'El archivo seleccionado no es una imagen.',
         ]);
 
-        /* dd($this->image); */
         try {
             $product = new Product();
             $product->code = $this->code;
@@ -42,37 +47,47 @@ new class extends Component {
             $product->category_id = $this->categorySelected;
             $product->supplier_id = $this->supplierSelected;
             $product->user_id = auth()->user()->id;
-            if ($product->save()) {
-                if ($this->image) {
-                    if ($this->uploadImage($product->id)) {
-                        $this->image = null;
-                        session()->flash('success', __('Producto creado exitosamente.'));
-                        return redirect()->route('products.index');
-                    }else {
-                        session()->flash('danger', __('Producto creado pero no se subio la imagen.'));
-                        return redirect()->route('products.index');
-                    }
+            $product->save();
+            if ($this->image && $this->image->isValid()){
+                try {
+                    $this->uploadImage($product->id);
+                    $this->reset();
+                    session()->flash('success', __('Producto creado exitosamente con imagen.'));
+                } catch (\Throwable $th) {
+                    $this->reset();
+                    session()->flash('success', __('Producto creado pero no se subio la imagen.'));
                 }
+            }else{
+                $this->reset();
+                session()->flash('success', __('Producto creado exitosamente sin imagen.'));
             }
+            return redirect()->route('products.index');
+            
             } catch (\Throwable $th) {
                 session()->flash('danger', __('Error al crear el producto: ') . $th->getMessage());
+                $this->reset();
                 return redirect()->route('products.index');
             }
     }
     public function uploadImage($product_id)
     {
+        /* Guardamos la imagen. */
         $path = $this->image->store('products', 'public');
         $nameImage = basename($path);
-
+        /* Guardamos la ruta de la imagen en la base de datos */
         $imageModel = new Image();
         $imageModel->name = $nameImage;
         $imageModel->product_id = $product_id;
         $imageModel->path = $path;
-        return $imageModel->save();
+        $imageModel->save();
     }
 }; ?>
 
 <div>
+    @php
+        $categories = $this->categories;
+        $suppliers = $this->suppliers;
+    @endphp
     <flux:heading size="xl">Crear Producto</flux:heading>
     <flux:text class="mt-2">Crea los productos de nuestra aplicación.</flux:text>
     <form wire:submit.prevent="create" class="flex flex-col gap-6 mt-4" enctype="multipart/form-data">
