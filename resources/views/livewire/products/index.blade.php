@@ -3,6 +3,8 @@
 use Livewire\Volt\Component;
 use App\Models\Product;
 use App\Models\Image;
+use App\Models\Purchase;
+use Illuminate\Support\Facades\Storage;
 use Livewire\WithPagination;
 
 new class extends Component {
@@ -43,18 +45,23 @@ new class extends Component {
     public function delete($id)
     {
         try {
-            $product = Product::find($id);
-            $imageModel = Image::where('product_id', $product->id)->first();
-            if ($imageModel->path && Storage::disk('public')->exists($imageModel->path)) {
+            $purchases = Purchase::where('product_id', $id);
+            if ($purchases) {
+            session()->flash('danger', 'No se puede eliminar el producto porque tiene compras asociadas.');
+            }else {
+                $product = Product::find($id);
+                $imageModel = Image::where('product_id', $product->id)->first();
+                if ($imageModel && $imageModel->path && Storage::disk('public')->exists($imageModel->path)) {
                 Storage::disk('public')->delete($imageModel->path);
-            }
+                }
             $product->delete();
-            Flux::modal('delete-product')->close();
             session()->flash('success', 'Producto eliminado correctamente.');
+            }
         } catch (\Throwable $th) {
             session()->flash('danger', 'Error al eliminar el producto: ' . $th->getMessage());
         }
-        $this->resetSelectedProduct();
+        Flux::modal('delete-product')->close();
+        $this->reset('selectedProductId', 'selectedProductName');
         $this->resetPage();
     }
     public function updateProductState($user_id)
@@ -78,9 +85,9 @@ new class extends Component {
     {
         return redirect()->route('products.edit', ['id' => $id]);
     }
-    public function updateImage($image_id)
+    public function updateImage($product_id = 0, $image_id = 0)
     {
-        return redirect()->route('products.show-image', ['image_id' => $image_id]);
+        return redirect()->route('products.update-image', ['product_id' => $product_id, 'image_id' => $image_id]);
     }
     public function resetSelectedProduct()
     {

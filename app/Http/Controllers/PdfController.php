@@ -32,7 +32,9 @@ class PdfController extends Controller
         ])->render();
         $pdf = new Dompdf();
         $pdf->loadHtml($html);
-        $pdf->setPaper('A4', 'portrait');
+        $pdf->setPaper([0, 0, 226.77, 350], 'portrait');
+        $pdf->set_option('isHtml5ParserEnabled', true);
+        $pdf->set_option('isRemoteEnabled', true);
         $pdf->render();
         $pdf->stream('ticket'.$sale->id.'.pdf', array("Attachment" => false));
     }

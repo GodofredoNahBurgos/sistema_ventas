@@ -59,7 +59,7 @@ Route::middleware(['auth'])->group(function () {
         Volt::route('products/index', 'products.index')->name('products.index');
         Volt::route('products/create', 'products.create')->name('products.create');
         Volt::route('products/edit/{id}', 'products.edit')->name('products.edit');
-        Volt::route('products/show-image/{image_id}', 'products.show-image')->name('products.show-image');
+        Volt::route('products/update-image/{product_id}/{image_id}', 'products.components.update-image')->name('products.update-image');
     });
 
     Route::prefix('product_reports')->middleware('auth', 'Checkrole:admin')->group(function () {

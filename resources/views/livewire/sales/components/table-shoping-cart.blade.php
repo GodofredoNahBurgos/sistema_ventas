@@ -1,3 +1,6 @@
+@php
+    $total_general = 0;
+@endphp
 <div class="overflow-x-auto">
     <table class="table-auto w-full">
         <thead>
@@ -5,20 +8,13 @@
                 <td class="border border-gray-300 text-center">Codigo</td>
                 <td class="border border-gray-300 text-center">Nombre</td>
                 <td class="border border-gray-300 text-center">Cantidad</td>
-                <td class="border border-gray-300 text-center">Precio V.</td>
+                <td class="border border-gray-300 text-center">Precio</td>
                 <td class="border border-gray-300 text-center">Quitar</td>
             </tr>
         </thead>
         <tbody>
-            @php
-                $total_general = 0;
-            @endphp
             @if (Session::has('items_cart') )
             @foreach (Session::get('items_cart') as $item_cart)
-            @php
-                $total_product = $item_cart['sale_price'] * $item_cart['quantity'];
-                $total_general += $total_product;
-            @endphp
             <tr>
                 <td class="border border-gray-300 text-center">{{ $item_cart['code'] }}</td>
                 <td class="border border-gray-300 text-center">{{ $item_cart['name'] }} </td>
@@ -29,6 +25,10 @@
                         wire:click="removeFromCart({{ $item_cart['id'] }})">Quitar 1</flux:button>
                 </td>
             </tr>
+            @php
+                $total_product = $item_cart['sale_price'] * $item_cart['quantity'];
+                $total_general += $total_product;
+            @endphp
             @endforeach
             @else
             <tr>

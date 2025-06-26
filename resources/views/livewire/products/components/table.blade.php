@@ -22,7 +22,7 @@
         <tbody>
             @if ($products->isEmpty())
             <tr>
-                <td colspan="11" class="border border-gray-300 text-center">No hay productos disponibles.</td>
+                <td colspan="12" class="border border-gray-300 text-center">No hay productos disponibles.</td>
             </tr>
             @else
             @foreach ($products as $product)
@@ -32,10 +32,16 @@
                 <td class="border border-gray-300 text-center">{{ $product->supplier_name }}</td>
                 <td class="border border-gray-300 text-center">{{ $product->name }}</td>
                 <td class="border border-gray-300 text-center">
-                    <img src="{{ asset('storage/'.$product->image_path) }}" alt="Imagen del producto"
-                        class="w-16 h-16 object-cover">
+                    @if ($product->image_path && Storage::disk('public')->exists($product->image_path))
+                    <div class="mt-2 w-16 h-16 flex items-center justify-center" >
+                        <img src="{{ asset('storage/'.$product->image_path) }}" alt="Imagen del producto"
+                        class="max-w-full max-h-full object-contain">
+                    </div>
+                    @else
+                    <span class=" italic">Sin imagen</span>
+                    @endif
                     <flux:badge class="cursor-pointer" icon="pencil-square" color="blue" size="sm"
-                        wire:click="updateImage({{ $product->image_id }})"></flux:badge>
+                        wire:click="updateImage({{ $product->id }}, {{ $product->image_id ?? 0 }})"></flux:badge>
                 </td>
                 <td class="border border-gray-300 text-center">{{ $product->description }}</td>
                 <td class="border border-gray-300 text-center">{{ $product->quantity }}</td>

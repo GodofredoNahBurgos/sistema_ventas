@@ -3,7 +3,11 @@
         <strong>Panel de Control</strong>
     </div>
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
-
+        <div class=" text-center pt-2 dark:text-white relative flex-1 overflow-hidden rounded-xl border border-neutral-400 dark:border-neutral-700">
+            <h1> <strong>Venta Historica</strong></h1>
+            <p>{{ '$'.number_format($totalSales, 2) }}</p>
+        </div>
+        
         <div class="grid auto-rows-min gap-4 md:grid-cols-2 justify-items-center">
             <div
                 class="bg-stone-800 dark:bg-neutral-900 text-white pt-2 px-2 h-18 w-72 text-center relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
@@ -57,7 +61,7 @@
             <div class="px-4">
                 <ol>
                     @foreach ($lowStock as $item)
-                    <li>{{ 'Codigo: '.$item->code.' Nombre: '.$item->product_name.' Cantidad: '.$item->quantity }}</li>
+                    <li>{{ 'Codigo: '.$item->code.' Nombre: '.$item->name.' Cantidad: '.$item->quantity }}</li>
                     @endforeach
                 </ol>
             </div>

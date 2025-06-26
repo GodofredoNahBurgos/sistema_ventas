@@ -24,87 +24,87 @@ new class extends Component {
     }
     public function addToCart($product_id)
     {
-        $item = Product::find($product_id);
-        /* Obtener productos ya almacenados. */
-        $availableQuantity = $item->quantity;
-        $items_cart = Session::get('items_cart', []);
-        /* Verificar si el producto ya está en el carrito. */
-        $exists = false;
-        foreach ($items_cart as $key => $cart_item) {
-            if ($cart_item['id'] == $product_id) {
-                if ($cart_item['quantity'] >= $availableQuantity) {
-                    return back()->with('danger', 'No hay stock suficiente');
-                }
-                /* Actualizar la cantidad. */
-                $items_cart[$key]['quantity'] += 1;
-                $exists = true;
-                break;
+        $product = Product::findOrFail($product_id);
+        $cart = collect(Session::get('items_cart', []));
+
+        $existingItem = $cart->firstWhere('id', $product_id);
+
+        if ($existingItem) {
+            if ($existingItem['quantity'] >= $product->quantity) {
+                return back()->with('danger', 'No hay stock suficiente');
             }
+            $cart = $cart->map(function ($item) use ($product_id) {
+                if ($item['id'] === $product_id) {
+                    $item['quantity'] += 1;
+                }
+                return $item;
+            });
+        } else {
+            $cart->push([
+                'id' => $product->id,
+                'code' => $product->code,
+                'name' => $product->name,
+                'quantity' => 1,
+                'sale_price' => $product->sale_price
+            ]);
         }
-        if (!$exists) {
-            /* Agregar el nuevo producto. */
-        $items_cart [] = [
-            'id' => $product_id,
-            'code' => $item->code,
-            'name' => $item->name,
-            'quantity' => 1,
-            'sale_price' => $item->sale_price
-        ];
-        }
-        /* Creamos la sesiom */
-        Session::put('items_cart', $items_cart);
+
+        Session::put('items_cart', $cart->toArray());
     }
     public function removeFromCart($product_id){
-        $items_cart = Session::get('items_cart', []);
-        foreach ($items_cart as $key => $cart_item) {
-            if ($cart_item['id'] == $product_id) {
-                if ($cart_item['quantity'] > 1) {
-                    $items_cart[$key]['quantity'] -= 1;
-                }else {
-                    unset($items_cart[$key]);
-                }
-                break;
+        $cart = collect(Session::get('items_cart', []));
+
+        $cart = $cart->map(function ($item) use ($product_id) {
+            if ($item['id'] === $product_id) {
+                $item['quantity'] -= 1;
             }
-        }
-        Session::put('items_cart', $items_cart);
+            return $item;
+        })->filter(fn($item) => $item['quantity'] > 0);
+
+        Session::put('items_cart', $cart->values()->toArray());
     }
     public function sale()
     {
-        $items_cart = Session::get('items_cart', []);
-        if (empty($items_cart)) {
+        $cartItems = collect(Session::get('items_cart', []));
+
+        if ($cartItems->isEmpty()) {
             return back()->with('danger', 'No hay productos en el carrito.');
         }
-        /* Inciar transaccion, si algo sale mal no se guarda*/
+
         DB::beginTransaction();
+
         try {
-            $totalSale = 0;
-            foreach ($items_cart as $item) {
-                $totalSale += $item['sale_price'] * $item['quantity'];
-                $product = Product::find($item['id']);
-                $product->quantity -= $item['quantity'];
-                $product->save();
+            
+            $totalSale = $cartItems->sum(fn($item) => $item['sale_price'] * $item['quantity']);
+
+            // Actualizar stock
+            foreach ($cartItems as $item) {
+                $product = Product::findOrFail($item['id']);
+                $product->decrement('quantity', $item['quantity']);
             }
-            /* Crear la venta */
-            $sale = new Sale();
-            $sale->user_id = auth()->id();
-            $sale->total_sale = $totalSale;
-            $sale->save();
-            /* Guardar los detalles de la venta */
-            foreach ($items_cart as $item) {
-                $saleDetail = new SaleDetails();
-                $saleDetail->sale_id = $sale->id;
-                $saleDetail->product_id = $item['id'];
-                $saleDetail->quantity = $item['quantity'];
-                $saleDetail->sub_total = $item['sale_price'] * $item['quantity'];
-                $saleDetail->unit_price = $item['sale_price'];
-                $saleDetail->save();
+
+            $sale = Sale::create([
+                'user_id' => auth()->id(),
+                'total_sale' => $totalSale,
+            ]);
+
+            foreach ($cartItems as $item) {
+                SaleDetails::create([
+                    'sale_id' => $sale->id,
+                    'product_id' => $item['id'],
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $item['sale_price'],
+                    'sub_total' => $item['sale_price'] * $item['quantity'],
+                ]);
             }
+
             DB::commit();
             $this->resetCart();
+
             return redirect()->route('sales.index')->with('success', 'Venta realizada exitosamente.');
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             DB::rollBack();
-            return redirect()->route('sales.index')->with('danger', 'Error al realizar la venta: ' . $th->getMessage());
+            return redirect()->route('sales.index')->with('danger', 'Error al realizar la venta: ' . $e->getMessage());
         }
     }
     public function resetCart(){
@@ -135,7 +135,7 @@ new class extends Component {
     <div class="flex flex-row" >
         <div>
             <form wire:submit.prevent="sale()">
-            <flux:button icon="banknotes" class="cursor-pointer" variant="primary" type="submit" >Realizar Venta</flux:button>
+            <flux:button icon="banknotes" class="cursor-pointer" variant="primary" type="submit" wire:loading.attr="disabled" >Realizar Venta</flux:button>
         </form>
         </div>
         <div class="mx-2">

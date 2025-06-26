@@ -2,43 +2,51 @@
 <html lang="en">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Ticket de Compra</title>
     <style>
-        body{
+
+        body {
             font-family: DejaVu, Sans, sans-serif;
         }
-        .ticket{
-            width: 300px;
-            margin: auto;
-            padding: 10px;
-            border: 1px solid #000;
+
+        .ticket {
+            width: 80mm;
+            max-width: 80mm;
+            overflow: hidden;
+            font-size: 12px;
         }
-        .title{
-            font-size: 18px;
+
+        .title {
             font-weight: bold;
         }
-        .detail{
-            text-align: left;
-            margin-top: 10px;
+
+        .detail {
+            max-width: 80mm;
         }
-        .total{
-            font-size: 17px;
+
+        .total {
             font-weight: bold;
-            margin-top: 10px;
         }
-        table{
-            width: 100%;
+
+        table {
+            width: 60mm;
+            table-layout: fixed;
             border-collapse: collapse;
+            font-size: 10px;
         }
-        th, td{
-            border-bottom: 1px solid #000;
-            padding: 5px;
-            text-align: left;
+
+        th,
+        td {
+            border: 1px solid #000;
+            text-align: center;
+            vertical-align: middle;
+            word-break: break-word;
+            overflow: hidden;
+            white-space: normal;
         }
- 
     </style>
 </head>
 
@@ -61,8 +69,8 @@
                     <tr>
                         <td class="border border-gray-300 text-center">{{ $detail->product_name }}</td>
                         <td class="border border-gray-300 text-center">{{ $detail->quantity }}</td>
-                        <td class="border border-gray-300 text-center">{{ $detail->unit_price }}</td>
-                        <td class="border border-gray-300 text-center">{{ $detail->sub_total }}</td>
+                        <td class="border border-gray-300 text-center">{{ '$'.$detail->unit_price }}</td>
+                        <td class="border border-gray-300 text-center">{{ '$'.$detail->sub_total }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -73,4 +81,5 @@
         <p>Gracias por su compra.</p>
     </div>
 </body>
+
 </html>

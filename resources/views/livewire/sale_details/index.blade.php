@@ -8,23 +8,30 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Dompdf\Dompdf;
 use Illuminate\Http\Response;
+use Livewire\WithPagination;
 
 new class extends Component {
+    use WithPagination;
+    public $search = '';
     public $sale;
-    /* public $details; */
-    public $sales;
     public $selectedSaleId;
-    /* public $selectedSale; */
-    public function mount()
+    
+    public function getSalesProperty()
     {
-        $this->sales = Sale::select(
+        return Sale::select(
             'sales.*',
             'users.name as user_name',
         )
         ->join('users', 'sales.user_id', '=', 'users.id')
+        ->where('sales.created_at', 'like', '%' . $this->search . '%')
         ->orderBy('sales.created_at', 'desc')
-        ->get();
+        ->paginate(5);
     }
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+    
     public function detailSale($id){
         return redirect()->route('sale_details.sale_detail', ['sale_id' => $id]);
     }
@@ -57,31 +64,18 @@ new class extends Component {
 }; ?>
 
 <div>
-    <div class="flex flex-col">
-        <flux:heading size="xl">Consulta de Ventas</flux:heading>
-        <flux:text class="mt-2">Revisar ventas existentes.</flux:text>
-        <div class="m-2 w-full flex justify-end">
-            @include('livewire.categories.components.messages')
+    <div class="flex justify-between items-end flex-wrap w-full mb-4">
+        <div class="text-left">
+            <flux:heading size="xl">Consulta de Ventas</flux:heading>
+            <flux:text class="mt-2">Revisar ventas existentes.</flux:text>
+        </div>
+        <div class="flex items-center space-x-4 mt-2">
+            <flux:input icon="magnifying-glass-plus" type="search" label="Buscar Ventas" placeholder="Ingrese fecha de venta" size="30"
+                wire:model.live="search"></flux:input>
         </div>
     </div>
+    @include('livewire.sale_details.components.messages')
     <flux:separator class="my-4" text="Datos" />
-    <div class="overflow-x-auto">
-        <table class="table-auto w-full">
-            <thead class="">
-                <tr>
-                    <th class="border border-gray-300 text-center">ID</th>
-                    <th class="border border-gray-300 text-center">Total Vendido</th>
-                    <th class="border border-gray-300 text-center">Fecha</th>
-                    <th class="border border-gray-300 text-center">Usuario</th>
-                    <th class="border border-gray-300 text-center">Ver Detalle</th>
-                    <th class="border border-gray-300 text-center">Imprimir Ticket</th>
-                    <th class="border border-gray-300 text-center">Revocar Venta</th>
-                </tr>
-            </thead>
-            <tbody>
-                @include('livewire.sale_details.components.tbody')
-            </tbody>
-        </table>
-    </div>
+    @include('livewire.sale_details.components.table')
     @include('livewire.sale_details.components.modal-revoke')
 </div>

@@ -51,8 +51,8 @@ new class extends Component {
     <flux:heading size="xl">Editar una compra.</flux:heading>
     <flux:text class="mt-2">Edición de compra de: {{ $this->purchase->product_name }} </flux:text>
     <form wire:submit.prevent="update" class="flex flex-col gap-6 mt-4">
-        <flux:input type="text" label="Cantidad del producto" wire:model="quantity" />
-        <flux:input type="text" label="Costo del producto" wire:model="cost_price" />
+        <flux:input type="text" label="Cantidad del producto" wire:model.defer="quantity" />
+        <flux:input type="text" label="Costo del producto" wire:model.defer="cost_price" />
         <div class="flex items-center justify-start">
             <flux:button icon="arrow-path" variant="primary" type="submit" class="cursor-pointer">Actualizar Compra</flux:button>
             <flux:button icon="x-mark" variant="danger" type="button" class="mx-2"><a
