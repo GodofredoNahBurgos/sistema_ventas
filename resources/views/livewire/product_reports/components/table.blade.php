@@ -5,6 +5,7 @@
     <table class="table-auto w-full">
         <thead >
             <tr>
+                <th class="border border-gray-300 text-center">Codigo</th>
                 <th class="border border-gray-300 text-center">Categoria</th>
                 <th class="border border-gray-300 text-center">Proveedor</th>
                 <th class="border border-gray-300 text-center">Nombre</th>
@@ -23,6 +24,7 @@
             @else
             @foreach ($products as $product)
             <tr>
+                <td class="border border-gray-300 text-center">{{ $product->code }}</td>
                 <td class="border border-gray-300 text-center">{{ $product->category_name }}</td>
                 <td class="border border-gray-300 text-center">{{ $product->supplier_name }}</td>
                 <td class="border border-gray-300 text-center">{{ $product->name }}</td>
@@ -32,8 +34,8 @@
                 </td>
                 <td class="border border-gray-300 text-center">{{ $product->description }}</td>
                 <td class="border border-gray-300 text-center">{{ $product->quantity }}</td>
-                <td class="border border-gray-300 text-center">{{ $product->cost_price }}</td>
-                <td class="border border-gray-300 text-center">{{ $product->sale_price }}</td>
+                <td class="border border-gray-300 text-center">{{ '$'.number_format($product->cost_price, 2) }}</td>
+                <td class="border border-gray-300 text-center">{{ '$'.number_format($product->sale_price, 2) }}</td>
             </tr>
             @endforeach
             @endif

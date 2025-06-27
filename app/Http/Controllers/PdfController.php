@@ -25,6 +25,7 @@ class PdfController extends Controller
         )
         ->join('products', 'sale_details.product_id', '=', 'products.id')
         ->where('sale_details.sale_id', '=', $sale_id)
+        ->orderBy('products.name', 'asc')
         ->get();
         $html = View::make('livewire.sale_details.components.ticket', [
             'sale' => $sale,
@@ -50,6 +51,7 @@ class PdfController extends Controller
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->join('suppliers', 'products.supplier_id', '=', 'suppliers.id')
             ->leftjoin('images', 'products.id', '=', 'images.product_id')
+            ->orderBy('products.name', 'asc')
             ->get();
             
             $html = View::make('livewire.product_reports.components.products_pdf', [
@@ -74,6 +76,7 @@ class PdfController extends Controller
         ->join('suppliers', 'products.supplier_id', '=', 'suppliers.id')
         ->leftjoin('images', 'products.id', '=', 'images.product_id')
         ->whereBetween('products.quantity', [0,3])
+        ->orderBy('products.name', 'asc')
         ->get();
 
         $html = View::make('livewire.product_reports.components.products_pdf_minstock', [

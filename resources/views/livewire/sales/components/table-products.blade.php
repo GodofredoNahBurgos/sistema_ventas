@@ -18,7 +18,7 @@
                 <td class="border border-gray-300 text-center">{{ $product->code }}</td>
                 <td class="border border-gray-300 text-center">{{ $product->name }} </td>
                 <td class="border border-gray-300 text-center">{{ $product->quantity }} </td>
-                <td class="border border-gray-300 text-center">{{ '$'.$product->sale_price }}</td>
+                <td class="border border-gray-300 text-center">{{ '$'.number_format($product->sale_price, 2) }}</td>
                 <td class="border border-gray-300 text-center">
                     @if ($product->quantity > 0)
                     <flux:button icon="plus" class="cursor-pointer" variant="primary"

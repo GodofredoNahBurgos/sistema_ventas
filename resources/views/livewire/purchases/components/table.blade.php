@@ -25,8 +25,8 @@
                 <td class="border border-gray-300 text-center">{{ $purchase->user_name }}</td>
                 <td class="border border-gray-300 text-center">{{ $purchase->product_name }}</td>
                 <td class="border border-gray-300 text-center">{{ $purchase->quantity }}</td>
-                <td class="border border-gray-300 text-center">{{ '$'.$purchase->cost_price }}</td>
-                <td class="border border-gray-300 text-center">{{ '$'.($purchase->cost_price * $purchase->quantity) }}
+                <td class="border border-gray-300 text-center">{{ '$'.number_format($purchase->cost_price, 2) }}</td>
+                <td class="border border-gray-300 text-center">{{ '$'.number_format($purchase->cost_price * $purchase->quantity, 2) }}
                 </td>
                 <td class="border border-gray-300 text-center">{{ $purchase->created_at }}</td>
                 <td class="border border-gray-300 text-center">

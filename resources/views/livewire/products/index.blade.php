@@ -28,7 +28,8 @@ new class extends Component {
             ->where(function ($query) {
                 $query->where('products.name', 'like', '%' . $this->search . '%')
                 ->orWhere('products.code', 'like', '%' . $this->search . '%');
-            })->paginate(4);
+            })->orderBy('products.name', 'asc')
+            ->paginate(4);
     }
     public function getCurrentPage()
     {

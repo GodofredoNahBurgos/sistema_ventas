@@ -29,12 +29,12 @@ new class extends Component {
     }
     public function update(){
         $validated = $this->validate([
-            'code' => 'required|string|max:255',
+            'code' => 'required|string|max:255|unique:products,code,' . $this->id,
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
             'categorySelected' => 'required|exists:categories,id',
             'supplierSelected' => 'required|exists:suppliers,id',
-            'sale_price' => 'required|numeric',
+            'sale_price' => 'required|numeric|min:0',
         ]);
         try {
             $product = Product::find($this->id);

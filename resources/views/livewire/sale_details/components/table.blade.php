@@ -23,7 +23,7 @@
             @foreach ($sales as $sale)
             <tr>
                 <td class="border border-gray-300 text-center">{{ $sale->id }}</td>
-                <td class="border border-gray-300 text-center">{{ '$'.$sale->total_sale }}</td>
+                <td class="border border-gray-300 text-center">{{ '$'.number_format($sale->total_sale, 2) }}</td>
                 <td class="border border-gray-300 text-center">{{ $sale->created_at }}</td>
                 <td class="border border-gray-300 text-center">{{ $sale->user_name }}</td>
                 <td class="border border-gray-300 text-center">

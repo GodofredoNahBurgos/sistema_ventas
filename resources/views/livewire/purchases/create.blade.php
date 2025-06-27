@@ -19,8 +19,8 @@ new class extends Component {
     public function buy()
     {
         $this->validate([
-            'quantity' => 'required|numeric',
-            'cost_price' => 'required|numeric',
+            'quantity' => 'required|numeric|min:1',
+            'cost_price' => 'required|numeric|min:0',
         ]);
         try {
             $purchase = new Purchase();

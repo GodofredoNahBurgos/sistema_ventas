@@ -19,7 +19,7 @@
                 <td class="border border-gray-300 text-center">{{ $item_cart['code'] }}</td>
                 <td class="border border-gray-300 text-center">{{ $item_cart['name'] }} </td>
                 <td class="border border-gray-300 text-center">{{ $item_cart['quantity'] }} </td>
-                <td class="border border-gray-300 text-center">{{ '$'.$item_cart['sale_price'] }}</td>
+                <td class="border border-gray-300 text-center">{{ '$'.number_format($item_cart['sale_price'], 2) }}</td>
                 <td class="border border-gray-300 text-center">
                     <flux:button icon="trash" class="cursor-pointer" variant="danger"
                         wire:click="removeFromCart({{ $item_cart['id'] }})">Quitar 1</flux:button>
@@ -41,7 +41,7 @@
                 <td></td>
                 <td></td>
                 <td class="text-center">Total General:</td>
-                <td class="text-center"><strong>{{ '$'.$total_general }}</strong></td>
+                <td class="text-center"><strong>{{ '$'.number_format($total_general, 2) }}</strong></td>
             </tr>
         </tfoot>
     </table>

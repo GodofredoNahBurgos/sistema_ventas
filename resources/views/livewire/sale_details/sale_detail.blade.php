@@ -25,6 +25,7 @@ new class extends Component {
         )
         ->join('products', 'sale_details.product_id', '=', 'products.id')
         ->where('sale_details.sale_id', '=', $this->sale_id)
+        ->orderBy('products.name', 'asc')
         ->get();
     }
 
@@ -42,7 +43,7 @@ new class extends Component {
         </div>
     </div>
     <flux:heading size="lg" >Venta ralizada por: {{ $sale->user_name }}</flux:heading>
-    <flux:heading size="lg" >Total de Venta: {{ '$'.$sale->total_sale }}</flux:heading>
+    <flux:heading size="lg" >Total de Venta: {{ '$'.number_format($sale->total_sale, 2) }} </flux:heading>
     <flux:heading size="lg" >Fecha: {{ $sale->created_at }}</flux:heading>
     <flux:separator class="my-4" text="Datos" />
     @include('livewire.sale_details.components.table-detail')

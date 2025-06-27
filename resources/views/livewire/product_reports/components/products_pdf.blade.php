@@ -25,6 +25,7 @@
     <table>
         <thead>
             <tr>
+                <th>Codigo</th>
                 <th>Nombre</th>
                 <th>Categoría</th>
                 <th>Proveedor</th>
@@ -41,6 +42,7 @@
             @endif
             @foreach ($products as $product)
                 <tr>
+                    <td>{{ $product->code }}</td>
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->category_name }}</td>
                     <td>{{ $product->supplier_name }}</td>

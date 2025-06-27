@@ -22,6 +22,7 @@ new class extends Component {
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->join('suppliers', 'products.supplier_id', '=', 'suppliers.id')
             ->leftjoin('images', 'products.id', '=', 'images.product_id')
+            ->orderBy('products.name', 'asc')
             ->get();
     }
     public function getProductsTableProperty()
@@ -36,6 +37,7 @@ new class extends Component {
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->join('suppliers', 'products.supplier_id', '=', 'suppliers.id')
             ->leftjoin('images', 'products.id', '=', 'images.product_id')
+            ->orderBy('products.name', 'asc')
             ->paginate(5);
     }
     public function exportAllProductsExcel()
@@ -44,22 +46,26 @@ new class extends Component {
         $sheet = $spreadsheet->getActiveSheet();
 
         $sheet->setCellValue('A1', 'ID');
-        $sheet->setCellValue('B1', 'Nombre');
-        $sheet->setCellValue('C1', 'Categoria');
-        $sheet->setCellValue('D1', 'Proveedor');
-        $sheet->setCellValue('E1', 'Precio Compra');
-        $sheet->setCellValue('F1', 'Precio Venta');
+        $sheet->setCellValue('B1', 'Codigo');
+        $sheet->setCellValue('C1', 'Nombre');
+        $sheet->setCellValue('D1', 'Categoria');
+        $sheet->setCellValue('E1', 'Proveedor');
+        $sheet->setCellValue('F1', 'Precio Compra');
+        $sheet->setCellValue('G1', 'Precio Venta');
+        $sheet->setCellValue('H1', 'Cantidad');
 
         $data = $this->products;
 
         $row = 2;
         foreach ($data as $item) {
             $sheet->setCellValue('A' . $row, $item->id);
-            $sheet->setCellValue('B' . $row, $item->name);
-            $sheet->setCellValue('C' . $row, $item->category_name);
-            $sheet->setCellValue('D' . $row, $item->supplier_name);
-            $sheet->setCellValue('E' . $row, $item->cost_price);
-            $sheet->setCellValue('F' . $row, $item->sale_price);
+            $sheet->setCellValue('B' . $row, $item->code);
+            $sheet->setCellValue('C' . $row, $item->name);
+            $sheet->setCellValue('D' . $row, $item->category_name);
+            $sheet->setCellValue('E' . $row, $item->supplier_name);
+            $sheet->setCellValue('F' . $row, $item->cost_price);
+            $sheet->setCellValue('G' . $row, $item->sale_price);
+            $sheet->setCellValue('H' . $row, $item->quantity);
             $row++;
         }
 

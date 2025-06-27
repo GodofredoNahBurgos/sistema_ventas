@@ -22,6 +22,7 @@ new class extends Component {
         ->join('users', 'purchases.user_id', '=', 'users.id')
         ->join('products', 'purchases.product_id', '=', 'products.id')
         ->where('purchases.created_at', 'like', '%' . $this->search . '%')
+        ->orderBy('purchases.created_at', 'desc')
         ->paginate(5);
     }
     public function updatedSearch()

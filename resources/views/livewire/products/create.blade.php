@@ -27,7 +27,7 @@ new class extends Component {
     public function create()
     {
         $this->validate([
-            'code' => 'required|string|max:255',
+            'code' => 'required|string|max:255|unique:products,code',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
             'categorySelected' => 'required|exists:categories,id',

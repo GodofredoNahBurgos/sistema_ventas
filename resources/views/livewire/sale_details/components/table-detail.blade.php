@@ -21,8 +21,8 @@ $details = $this->details;
             <tr>
                 <td class="border border-gray-300 text-center">{{ $detail->product_name }}</td>
                 <td class="border border-gray-300 text-center">{{ $detail->quantity }}</td>
-                <td class="border border-gray-300 text-center">{{ $detail->unit_price }}</td>
-                <td class="border border-gray-300 text-center">{{ $detail->sub_total }}</td>
+                <td class="border border-gray-300 text-center">{{ number_format($detail->unit_price, 2) }}</td>
+                <td class="border border-gray-300 text-center">{{ number_format($detail->sub_total, 2) }}</td>
             </tr>
             @endforeach
             @endif
