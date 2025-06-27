@@ -1,6 +1,7 @@
 <x-layouts.app :title="__('Dashboard')">
-    <div class="text-center m-4 text-2xl">
+    <div class="flex justify-between text-center m-4 text-2xl dark:text-white ">
         <strong>Panel de Control</strong>
+        <strong>{{ now()->format('Y-m-d') }}</strong>
     </div>
     <div class="flex h-full w-full flex-col gap-4 rounded-xl">
         <div class=" text-center pt-2 dark:text-white relative flex-none rounded-xl border border-neutral-300 dark:border-neutral-700">
@@ -43,7 +44,7 @@
                     <tbody>
                         @foreach ($recentSales as $item)
                         <tr>
-                            <td class="border border-gray-300 text-center px-2">{{ '$'.$item->total_sale }}</td>
+                            <td class="border border-gray-300 text-center px-2">{{ '$'.number_format($item->total_sale, 2) }}</td>
                             <td class="border border-gray-300 text-center px-2">{{ $item->created_at }}</td>
                         </tr>
                         @endforeach

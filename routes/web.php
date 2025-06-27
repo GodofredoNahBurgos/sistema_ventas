@@ -55,7 +55,7 @@ Route::middleware(['auth'])->group(function () {
         Volt::route('suppliers/edit/{id}', 'suppliers.edit')->name('suppliers.edit');
     });
 
-    Route::prefix('products')->middleware('auth', 'Checkrole:admin')->group(function () {
+    Route::prefix('product')->middleware('auth', 'Checkrole:admin')->group(function () {
         Volt::route('products/index', 'products.index')->name('products.index');
         Volt::route('products/create', 'products.create')->name('products.create');
         Volt::route('products/edit/{id}', 'products.edit')->name('products.edit');
@@ -69,13 +69,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('product_reports/pdf-min', [PdfController::class, 'productsStockMin'])->name('products-min.pdf');
     });
 
-    Route::prefix('purchases')->middleware('auth', 'Checkrole:admin')->group(function () {
+    Route::prefix('purchase')->middleware('auth', 'Checkrole:admin')->group(function () {
         Volt::route('purchases/index', 'purchases.index')->name('purchases.index');
         Volt::route('purchases/create/{product_id}', 'purchases.create')->name('purchases.create');
         Volt::route('purchases/edit/{id}', 'purchases.edit')->name('purchases.edit');
     });
 
-    Route::prefix('sales')->middleware('auth')->group(function () {
+    Route::prefix('sale')->middleware('auth')->group(function () {
         Volt::route('sales/index', 'sales.index')->name('sales.index');
         Route::get('/ticket/{sale_id}', [PdfController::class, 'ticket'])->name('ticket.pdf');
     });
